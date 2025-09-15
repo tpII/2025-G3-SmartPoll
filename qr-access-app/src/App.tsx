@@ -1,5 +1,4 @@
 import './App.css'
-import { Login } from './views/Login'
 import { QRDisplay } from './views/QRDisplay'
 
 function App() {
