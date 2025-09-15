@@ -1,10 +1,11 @@
 import './App.css'
 import { Login } from './views/Login'
+import { QRDisplay } from './views/QRDisplay'
 
 function App() {
   return (
     <>
-      <Login onLogin={(token) => console.log('Logged in with token:', token)} />
+    <QRDisplay userToken="sample-token" onScanned={() => console.log('QR Code scanned')} onReset={() => console.log('Reset')} />
     </>
   )
 }
