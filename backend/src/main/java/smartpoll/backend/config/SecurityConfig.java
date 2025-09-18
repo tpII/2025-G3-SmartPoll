@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .exceptionHandling(e -> e.authenticationEntryPoint(unauthorizedHandler))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/api/auth/login",
+                                "/api/auth/signin",
                                 "/api/auth/signup",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",

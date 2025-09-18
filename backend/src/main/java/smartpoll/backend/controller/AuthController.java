@@ -3,8 +3,9 @@ package smartpoll.backend.controller;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import smartpoll.backend.dto.LoginRequest;
 import smartpoll.backend.dto.VoterRequest;
-import smartpoll.backend.dto.VoterResponse;
+import smartpoll.backend.dto.AuthResponse;
 import smartpoll.backend.service.AuthService;
 
 @RestController
@@ -16,8 +17,13 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/signup")
-    public VoterResponse signUp(@Valid @RequestBody VoterRequest request) {
+    public AuthResponse signUp(@Valid @RequestBody VoterRequest request) {
         return authService.signUp(request);
+    }
+
+    @PostMapping(path = "/signin")
+    public AuthResponse login(@Valid @RequestBody LoginRequest request) {
+        return authService.login(request);
     }
 
 }
