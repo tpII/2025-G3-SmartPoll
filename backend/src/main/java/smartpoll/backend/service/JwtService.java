@@ -31,6 +31,14 @@ public class JwtService {
                 .compact();
     }
 
+    public String generateQrToken(Long DNI) {
+        return Jwts.builder()
+                .setSubject(DNI.toString())
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+    }
+
     public String getEmailFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key).build()

@@ -9,7 +9,6 @@ import smartpoll.backend.dto.AuthResponse;
 import smartpoll.backend.service.AuthService;
 
 @RestController
-@CrossOrigin("*")
 @RequestMapping("/api/auth")
 public class AuthController {
 
