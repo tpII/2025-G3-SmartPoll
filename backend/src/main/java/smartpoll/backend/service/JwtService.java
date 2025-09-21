@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class JwtService {
@@ -29,14 +30,6 @@ public class JwtService {
                 .setExpiration(new Date((new Date()).getTime() + jwtExpiration))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
-    }
-
-    public String generateQrToken(Long DNI) {
-        return Jwts.builder()
-                .setSubject(DNI.toString())
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-
     }
 
     public String getEmailFromToken(String token) {
