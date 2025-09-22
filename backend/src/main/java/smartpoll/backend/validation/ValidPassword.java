@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @NotBlank(message = "Password is required")
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
-@Size(min = 8, max = 64, message = "Password must be between 8 and 64 characters")
+@Size(min = 4, max = 64, message = "Password must be between 4 and 64 characters")
 public @interface ValidPassword {
     String message() default "Invalid password";
     Class<?>[] groups() default {};
