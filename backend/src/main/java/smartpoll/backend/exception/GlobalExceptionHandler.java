@@ -59,8 +59,8 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex, request, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(ChangeSetPersister.NotFoundException.class)
-    public ResponseEntity<String> handleNotFound(ChangeSetPersister.NotFoundException ex, WebRequest request) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<String> handleNotFoundException(NotFoundException ex, WebRequest request) {
         return buildErrorResponse(ex, request, HttpStatus.NOT_FOUND);
     }
 
