@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/card'
 import { Vote, Shield } from 'lucide-react'
 import { FormField } from '@/components/FormField'
+import { useAuth } from '@/hooks/useAuth'
 
 interface LoginFormProps {
   onLogin: (token: string) => void
@@ -21,14 +22,18 @@ export function Login({ onLogin }: LoginFormProps) {
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
+  const { handleLogin } = useAuth()
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
 
-    // Simulate authentication
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    const status = await handleLogin(username, password)
 
-    // Generate a simple token for demo purposes
+    if (status === 401) {
+      alert('Login failed. Please check your credentials.')
+    }
+
     const token = `${username}-${Date.now()}`
     onLogin(token)
     setIsLoading(false)
@@ -55,9 +60,9 @@ export function Login({ onLogin }: LoginFormProps) {
         <CardContent>
           <form onSubmit={handleSubmit} className='space-y-4'>
             <FormField
-              label='Username'
+              label='Email or DNI'
               inputType='text'
-              placeholder='Enter your username'
+              placeholder='Enter your email or DNI'
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
@@ -74,6 +79,7 @@ export function Login({ onLogin }: LoginFormProps) {
               type='submit'
               className='w-full'
               disabled={isLoading || !username || !password}
+              onClick={() => handleLogin(username, password)}
             >
               {isLoading ? (
                 <div className='flex items-center gap-2'>
