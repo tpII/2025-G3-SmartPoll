@@ -5,6 +5,9 @@ services:
       - "8080:8080"
     depends_on:
       - db
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
   db:
     container_name: pgdb
     image: postgres
