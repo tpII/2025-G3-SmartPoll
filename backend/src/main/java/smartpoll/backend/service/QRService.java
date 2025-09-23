@@ -11,6 +11,7 @@ import smartpoll.backend.entity.VoterEntity;
 import smartpoll.backend.exception.NotFoundException;
 import smartpoll.backend.repository.QRStatusRepository;
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -29,12 +30,17 @@ public class QRService {
             try {
                 while (true) {
                     Thread.sleep(1000);
-                    emitter.send(getQRFromVoter(voter));
+                    emitter.send(SseEmitter.event()
+                            .name("qrStatus")
+                            .data(Map.of("status", "waiting", "token", getQRFromVoter(voter))));
                 }
             } catch (NotFoundException ex) {
                 try {
-                    emitter.send(SseEmitter.event().name("error").data(ex.getMessage()));
-                } catch (IOException ignored) {}
+                    emitter.send(SseEmitter.event()
+                            .name("qrStatus")
+                            .data(Map.of("status", "scanned")));
+                } catch (IOException ignored) {
+                }
                 emitter.complete();
             } catch (IOException | InterruptedException e) {
                 emitter.completeWithError(e);
@@ -44,19 +50,20 @@ public class QRService {
         return emitter;
     }
 
-    private QRResponse getQRFromVoter(VoterEntity voter) {
+    private UUID getQRFromVoter(VoterEntity voter) {
         Optional<QrStatusEntity> qrStatusEntity = qrStatusRepository.findByVoter(voter);
         if (qrStatusEntity.isEmpty()) {
             QrStatusEntity qrStatus = new QrStatusEntity();
             qrStatus.setVoter(voter);
             qrStatus = qrStatusRepository.save(qrStatus);
-            return new QRResponse(qrStatus.getToken());
+            return qrStatus.getToken();
         }
         QrStatusEntity qrStatus = qrStatusEntity.get();
         if(qrStatus.getConsumed()) {
             throw new NotFoundException("Consumed QR");
         }
-        return new QRResponse(qrStatusEntity.get().getToken());
+
+        return qrStatus.getToken();
     }
 
     public QRResponse consumeQR(UUID token) {
