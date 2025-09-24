@@ -28,7 +28,7 @@ export function Login({ onLogin }: LoginFormProps) {
     e.preventDefault()
     setIsLoading(true)
 
-    const status = await handleLogin(username, password)
+    const status = handleLogin && await handleLogin(username, password)
 
     if (status === 401) {
       alert('Login failed. Please check your credentials.')

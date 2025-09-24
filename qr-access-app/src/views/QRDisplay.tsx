@@ -9,23 +9,23 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { QrCode, LogOut, CheckCircle } from 'lucide-react'
+import { QrCode, LogOut, CheckCircle, Loader } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { EventSourcePolyfill } from 'event-source-polyfill'
 
 interface QRCodeDisplayProps {
-  userToken: string
-  onScanned: () => void
   onReset: () => void
 }
 
 export function QRDisplay({
-  userToken,
-  onScanned,
   onReset,
 }: QRCodeDisplayProps) {
   const [qrCodeUrl, setQrCodeUrl] = useState('')
   const [isScanned, setIsScanned] = useState(false)
+
+  const onScanned = () => {
+    // navigate('/success');
+  }
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -41,15 +41,25 @@ export function QRDisplay({
       }
     )
 
-    eventSource.onmessage = (event) => {
+    // @ts-expect-error TS2322
+    eventSource.addEventListener("qrStatus", (event : MessageEvent) => {
       try {
         const data = JSON.parse(event.data)
         console.log('Mensaje SSE:', data)
-        if (data.token) setQrCodeUrl(data.token)
+
+
+        if (data.status== "waiting" && data.token && !qrCodeUrl) setQrCodeUrl(data.token)
+
+        if (data.status === 'scanned') {
+          setIsScanned(true)
+          onScanned()
+          eventSource.close()
+        }
+
       } catch (err) {
         console.error('Error parseando SSE:', err)
       }
-    }
+    })
 
     eventSource.onerror = (err) => {
       console.error('Error SSE', err)
@@ -93,20 +103,20 @@ export function QRDisplay({
                 isScanned ? 'ring-4 ring-green-500 ring-opacity-50' : ''
               }`}
             >
-              {qrCodeUrl && (
+              {qrCodeUrl ? (
                 <QRCodeSVG
                   value={qrCodeUrl}
                   className='w-64 h-64 text-muted-foreground'
                 />
+              ) : (
+                <div className='w-64 h-64 flex items-center justify-center bg-gray-200 rounded'>
+                  <Loader className='w-8 h-8 text-gray-500 animate-spin' />
+                </div>
               )}
             </div>
           </div>
 
           <div className='text-center space-y-2'>
-            <p className='text-sm text-muted-foreground'>
-              Token:{' '}
-              <span className='font-mono text-xs'>{userToken.slice(-8)}</span>
-            </p>
             <p className='text-xs text-muted-foreground'>
               Keep this screen visible until scanned
             </p>

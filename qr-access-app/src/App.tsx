@@ -17,8 +17,6 @@ function App() {
             path='/'
             element={
               <QRDisplay
-                userToken='sample-token'
-                onScanned={() => console.log('QR Code scanned')}
                 onReset={() => console.log('Reset')}
               />
             }
