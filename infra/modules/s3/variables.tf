@@ -1,1 +1,1 @@
-variable "bucket-name" {}
+variable "bucket_name" {}
