@@ -75,20 +75,20 @@ resource "aws_ecs_capacity_provider" "this" {
 
   auto_scaling_group_provider {
     auto_scaling_group_arn         = aws_autoscaling_group.ecs_asg.arn
-    managed_termination_protection = "ENABLED"
+    managed_termination_protection = "DISABLED"
   }
 }
 
 # associate the capacity provider with the cluster
 resource "aws_ecs_cluster_capacity_providers" "this" {
-  cluster_name     = aws_ecs_cluster.this.name
+  cluster_name       = aws_ecs_cluster.this.name
   capacity_providers = [aws_ecs_capacity_provider.this.name]
 
   default_capacity_provider_strategy {
     capacity_provider = aws_ecs_capacity_provider.this.name
     weight            = 1
   }
-} 
+}
 
 # task definition
 resource "aws_ecs_task_definition" "this" {
@@ -107,8 +107,8 @@ resource "aws_ecs_task_definition" "this" {
       essential = true
       portMappings = [
         {
-          containerPort = 8000
-          hostPort      = 8000
+          containerPort = 8080
+          hostPort      = 8080
         }
       ]
     }
@@ -122,8 +122,8 @@ resource "aws_security_group" "allow_from_alb" {
 
   ingress {
     security_groups = var.elb_security_group_id
-    from_port       = 8000
-    to_port         = 8000
+    from_port       = 8080
+    to_port         = 8080
     protocol        = "tcp"
   }
 
@@ -145,16 +145,12 @@ resource "aws_ecs_service" "this" {
   load_balancer {
     target_group_arn = var.load_balancer_tg_arn
     container_name   = var.container_name
-    container_port   = 8000
+    container_port   = 8080
   }
 
   network_configuration {
-    subnets         = var.private_subnets_id
-    security_groups = [aws_security_group.allow_from_alb.id]
+    subnets          = var.private_subnets_id
+    security_groups  = [aws_security_group.allow_from_alb.id]
     assign_public_ip = false
   }
-}
-
-output "cluster_name" {
-  value = aws_ecs_cluster.this.name
 }

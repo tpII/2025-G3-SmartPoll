@@ -1,14 +1,14 @@
 # Target group
 resource "aws_lb_target_group" "web_tg" {
   name        = "${var.elb_name}-tg"
-  port        = 8000
+  port        = 8080
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = var.vpc_id
   slow_start  = 30
 
   health_check {
-    path                = "/" #TODO: change this to the API health path
+    path                = "/health"
     protocol            = "HTTP"
     matcher             = "200-399"
     interval            = 30

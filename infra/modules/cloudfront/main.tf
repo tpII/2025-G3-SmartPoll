@@ -40,13 +40,13 @@ resource "aws_cloudfront_origin_access_control" "default" {
 resource "aws_cloudfront_distribution" "s3_distribution" {
 
   origin {
-    domain_name = var.s3_bucket_regional_domain_name
+    domain_name              = var.s3_bucket_regional_domain_name
     origin_access_control_id = aws_cloudfront_origin_access_control.default.id
-    origin_id   = "S3-${var.s3_bucket_id}"
+    origin_id                = "S3-${var.s3_bucket_id}"
   }
 
-  enabled = true
-  is_ipv6_enabled = false
+  enabled             = true
+  is_ipv6_enabled     = false
   default_root_object = "index.html"
 
   price_class = "PriceClass_200"
@@ -67,7 +67,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     min_ttl                = 0
     default_ttl            = 3600
     max_ttl                = 86400
-    compress = true
+    compress               = true
     viewer_protocol_policy = "redirect-to-https"
   }
 

@@ -106,3 +106,21 @@ variable "cross_zone_load_balancing" {
 #   description = "Security groups ID for the ELB"
 #   type        = list(string)
 # }
+
+# RDS
+variable "db_name" {
+  description = "Name of the RDS database"
+  type        = string
+  default     = "smartpoll_db"
+}
+
+variable "db_username" {
+  description = "Username for the RDS database"
+  type        = string
+}
+
+variable "db_password" {
+  description = "Password for the RDS database"
+  type        = string
+  sensitive   = true
+}

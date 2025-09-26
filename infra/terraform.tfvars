@@ -16,3 +16,6 @@ vpc_az               = ["us-east-1a", "us-east-1b"]
 
 # S3
 s3_bucket_name = "smartpoll-bucket"
+
+# RDS
+db_name = "smartpoll_db"
