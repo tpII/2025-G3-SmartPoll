@@ -10,7 +10,7 @@
 
 2.  **Build the project:** This will download dependencies and compile the source code.
     ```bash
-    docker-compose up db backend --build
+    SPRING_PROFILES_ACTIVE=local docker-compose up db backend --build
     ```
 
 The application will start on `http://localhost:8080`.
