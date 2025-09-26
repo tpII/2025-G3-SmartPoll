@@ -62,6 +62,7 @@ public class QRService {
         if(qrStatus.getConsumed()) {
             throw new NotFoundException("Consumed QR");
         }
+
         return qrStatus.getToken();
     }
 

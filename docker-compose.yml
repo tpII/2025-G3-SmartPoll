@@ -7,6 +7,7 @@ services:
       - db
     environment:
       - SPRING_PROFILES_ACTIVE=prod
+
   db:
     container_name: pgdb
     image: postgres
@@ -20,5 +21,16 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  qr-access-app:
+    container_name: qr-access-app
+    build:
+      context: ./qr-access-app
+      dockerfile: Dockerfile
+    ports:
+      - "4173:4173"
+    environment:
+      - VITE_API_URL=http://localhost:3000
+    depends_on:
+      - db
 volumes:
   pgdata:
