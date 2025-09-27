@@ -1,7 +1,9 @@
 import { createContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+
 const apiUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : 'http://localhost:8080';
+
 
 interface IUser {
   email: string
