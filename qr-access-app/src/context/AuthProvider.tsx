@@ -1,7 +1,9 @@
 import { createContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const apiUrl = import.meta.env.VITE_API_URL;
+
+const apiUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : 'http://localhost:8080';
+
 
 interface IUser {
   email: string
@@ -14,7 +16,7 @@ interface IAuthContext {
   logued: boolean
   loading: boolean
   handleLogin: (email: string, password: string) => Promise<number | void>
-  handleSignup: (email: string, dni: number, password: string) => Promise<number | void>
+  handleSignUp: (email: string, dni: number | string, password: string) => Promise<number | void>
   handleLogout: () => void
   handle401: () => void
 }
@@ -24,7 +26,7 @@ const AuthContext = createContext<IAuthContext>({
   logued: false,
   loading: false,
   handleLogin: async () => {},
-  handleSignup: async () => {},
+  handleSignUp: async () => {},
   handleLogout: () => {},
   handle401: () => {},
 })
@@ -46,7 +48,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const handleLogin = async (identifier : string | number, password: string) => {
     try {
-
       const response = await fetch(`${apiUrl}/api/auth/signin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -69,15 +70,23 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }
 
-  const handleSignup = async (email: string, dni: number, password: string) => {
+  const handleSignUp = async (email: string, dni: number | string, password: string) => {
     try {
-      const response = await fetch('api/auth/register', {
+      const response = await fetch(`${apiUrl}/api/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, dni, password }),
+        body: JSON.stringify({ email, DNI: dni , password }),
       })
+      if (!response.ok) return response.status
 
-      return response.status
+      const data = await response.json()
+
+      setUser(data)
+      setLogued(true)
+      localStorage.setItem('token', data.token)
+
+      navigate('/')
+      setLoading(false)
     } catch {
       console.log('Algo salió mal')
     }
@@ -104,7 +113,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         loading,
         logued,
         handleLogin,
-        handleSignup,
+        handleSignUp,
         handleLogout,
         handle401,
       }}

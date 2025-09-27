@@ -1,3 +1,4 @@
 import { Login } from "./Login"
 import { QRDisplay } from "./QRDisplay"
-export { Login, QRDisplay }
+import { SignUp } from "./SignUp"
+export { Login, QRDisplay, SignUp }
