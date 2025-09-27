@@ -5,7 +5,7 @@ resource "aws_lb_target_group" "web_tg" {
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = var.vpc_id
-  slow_start  = 30
+  slow_start  = 60
 
   health_check {
     path                = "/health"
