@@ -1,6 +1,8 @@
 import { createContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 interface IUser {
   email: string
   DNI: number 
@@ -44,7 +46,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const handleLogin = async (identifier : string | number, password: string) => {
     try {
-      const response = await fetch('http://localhost:8080/api/auth/signin', {
+
+      const response = await fetch(`${apiUrl}/api/auth/signin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ identifier, password }),

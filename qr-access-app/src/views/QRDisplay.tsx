@@ -13,6 +13,8 @@ import { QrCode, LogOut, CheckCircle, Loader } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { EventSourcePolyfill } from 'event-source-polyfill'
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 interface QRCodeDisplayProps {
   onReset: () => void
 }
@@ -33,7 +35,7 @@ export function QRDisplay({
 
     // SSE con query param
     const eventSource = new EventSourcePolyfill(
-      `http://localhost:8080/api/qr`,
+      `${apiUrl}/api/qr`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
