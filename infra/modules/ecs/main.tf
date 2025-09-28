@@ -101,7 +101,7 @@ resource "aws_ecs_task_definition" "this" {
   container_definitions = jsonencode([
     {
       name      = var.container_name
-      image     = "${var.image_url}:latest"
+      image     = var.image_url
       cpu       = 256
       memory    = 512
       essential = true

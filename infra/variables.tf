@@ -102,11 +102,6 @@ variable "cross_zone_load_balancing" {
   default     = true
 }
 
-# variable "elb_security_groups_id" {
-#   description = "Security groups ID for the ELB"
-#   type        = list(string)
-# }
-
 # RDS
 variable "db_name" {
   description = "Name of the RDS database"

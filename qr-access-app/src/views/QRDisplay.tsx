@@ -9,9 +9,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { QrCode, LogOut, CheckCircle, Loader } from 'lucide-react'
+import { QrCode, LogOut, CheckCircle, Loader, Check } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { EventSourcePolyfill } from 'event-source-polyfill'
+
+const apiUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : 'http://localhost:8080';
+
 
 interface QRCodeDisplayProps {
   onReset: () => void
@@ -33,7 +36,7 @@ export function QRDisplay({
 
     // SSE con query param
     const eventSource = new EventSourcePolyfill(
-      `http://localhost:8080/api/qr`,
+      `${apiUrl}/api/qr`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -41,20 +44,29 @@ export function QRDisplay({
       }
     )
 
+    let opened = false
+    eventSource.onopen = () => {
+      if (!opened) {
+        console.log('SSE connection opened')
+        opened = true
+      }
+    }
+
     // @ts-expect-error TS2322
     eventSource.addEventListener("qrStatus", (event : MessageEvent) => {
       try {
         const data = JSON.parse(event.data)
         console.log('Mensaje SSE:', data)
 
-
-        if (data.status== "waiting" && data.token && !qrCodeUrl) setQrCodeUrl(data.token)
-
         if (data.status === 'scanned') {
           setIsScanned(true)
           onScanned()
           eventSource.close()
         }
+
+        if (data.status== "waiting" && data.token && !qrCodeUrl) setQrCodeUrl(data.token)
+
+
 
       } catch (err) {
         console.error('Error parseando SSE:', err)
@@ -64,6 +76,13 @@ export function QRDisplay({
     eventSource.onerror = (err) => {
       console.error('Error SSE', err)
       eventSource.close()
+
+      if (opened) {
+        setQrCodeUrl('a')
+        setIsScanned(true)
+        onScanned()
+      }
+
     }
 
     // cleanup al desmontar
@@ -99,15 +118,19 @@ export function QRDisplay({
         <CardContent className='space-y-6'>
           <div className='flex justify-center'>
             <div
-              className={`p-4 bg-white rounded-lg shadow-inner transition-all duration-500 ${
-                isScanned ? 'ring-4 ring-green-500 ring-opacity-50' : ''
-              }`}
+              className={`p-4 bg-white rounded-lg shadow-inner transition-all duration-500`}
             >
               {qrCodeUrl ? (
+                !isScanned ? (
                 <QRCodeSVG
                   value={qrCodeUrl}
                   className='w-64 h-64 text-muted-foreground'
-                />
+                  />) : (
+                    <div className='w-64 h-64 flex items-center justify-center bg-green-500 rounded'>
+
+                      <Check className='size-24 text-primary-foreground' />
+                      </div>
+                )
               ) : (
                 <div className='w-64 h-64 flex items-center justify-center bg-gray-200 rounded'>
                   <Loader className='w-8 h-8 text-gray-500 animate-spin' />

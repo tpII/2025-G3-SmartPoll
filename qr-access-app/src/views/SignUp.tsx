@@ -14,21 +14,23 @@ import { FormField } from '@/components/FormField'
 import { useAuth } from '@/hooks/useAuth'
 import { Link } from 'react-router-dom'
 
-export function Login() {
-  const [username, setUsername] = useState('')
+
+export function SignUp() {
+  const [email, setEmail] = useState('')
+  const [dni, setDni] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  const { handleLogin } = useAuth()
+  const { handleSignUp } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
 
-    const status = handleLogin && await handleLogin(username, password)
+    const status = handleSignUp && await handleSignUp(email, dni, password)
 
     if (status === 401 || status === 404) {
-      alert('Login failed. Please check your credentials.')
+      alert('Sign up failed. Please check your credentials.')
     }
 
     setIsLoading(false)
@@ -55,11 +57,19 @@ export function Login() {
         <CardContent>
           <form onSubmit={handleSubmit} className='space-y-4'>
             <FormField
-              label='Email or DNI'
+              label='Email'
               inputType='text'
-              placeholder='Enter your email or DNI'
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder='Enter your email'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <FormField
+              label='DNI'
+              inputType='text'
+              placeholder='Enter your DNI'
+              value={dni}
+              onChange={(e) => setDni(e.target.value)}
               required
             />
             <FormField
@@ -73,8 +83,8 @@ export function Login() {
             <Button
               type='submit'
               className='w-full'
-              disabled={isLoading || !username || !password}
-              onClick={() => handleLogin(username, password)}
+              disabled={isLoading || !email || !dni || !password}
+              onClick={() => handleSignUp(email, dni, password)}
             >
               {isLoading ? (
                 <div className='flex items-center gap-2'>
@@ -84,13 +94,13 @@ export function Login() {
               ) : (
                 <div className='flex items-center gap-2'>
                   <Shield className='w-4 h-4' />
-                  Sign In
+                  Sign Up 
                 </div>
               )}
             </Button>
             <div className='mt-4 text-center'>
               <p className='text-sm text-muted-foreground'>
-                Don't have an account? <Link to='/signup' className='text-primary'>Sign up</Link>
+                Already have an account? <Link to='/login' className='text-primary'>Log in</Link>
               </p>
             </div>
           </form>
