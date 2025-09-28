@@ -27,6 +27,7 @@ module "cloudfront" {
   s3_bucket_id                   = module.s3.s3_bucket_id
   s3_bucket_website_endpoint     = module.s3.s3_bucket_website_endpoint
   s3_bucket_regional_domain_name = module.s3.s3_bucket_regional_domain_name
+  certificate_arn                = var.cloudfront_certificate_arn
 }
 
 module "fck-nat" {
@@ -72,6 +73,7 @@ module "elb" {
   vpc_id                    = module.vpc.vpc_id
   cross_zone_load_balancing = var.cross_zone_load_balancing
   public_subnets_id         = module.vpc.public_subnets_id
+  certificate_arn           = var.alb_certificate_arn
 }
 
 module "rds" {

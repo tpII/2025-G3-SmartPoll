@@ -51,6 +51,10 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
   price_class = "PriceClass_200"
 
+  aliases = [
+    "smartpoll.tech"
+  ]
+
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
@@ -84,7 +88,10 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    cloudfront_default_certificate = false
+    acm_certificate_arn            = var.certificate_arn
+    ssl_support_method             = "sni-only"
+    minimum_protocol_version       = "TLSv1.2_2021"
   }
 
   restrictions {
