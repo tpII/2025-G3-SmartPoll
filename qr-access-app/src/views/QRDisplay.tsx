@@ -109,12 +109,12 @@ export function QRDisplay({
           </div>
           <div>
             <CardTitle className='text-2xl font-bold text-balance'>
-              {isScanned ? 'QR Code Scanned!' : 'Your Voting QR Code'}
+              {isScanned ? 'El código QR ha sido escaneado' : 'Tu código QR de acceso'}
             </CardTitle>
             <CardDescription className='text-muted-foreground'>
               {isScanned
-                ? 'Verification successful. Redirecting...'
-                : 'Present this QR code to the voting scanner'}
+                ? 'Verificación exitosa.'
+                : 'Presenta este código QR al escáner de votación'}
             </CardDescription>
           </div>
         </CardHeader>
@@ -144,7 +144,7 @@ export function QRDisplay({
 
           <div className='text-center space-y-2'>
             <p className='text-xs text-muted-foreground'>
-              Keep this screen visible until scanned
+              Mantén esta pantalla visible hasta que sea escaneada
             </p>
           </div>
 
@@ -155,7 +155,7 @@ export function QRDisplay({
             onClick={handleLogout}
           >
             <LogOut className='w-4 h-4 mr-2' />
-            Sign Out
+            Cerrar sesión
           </Button>
         </CardContent>
       </Card>

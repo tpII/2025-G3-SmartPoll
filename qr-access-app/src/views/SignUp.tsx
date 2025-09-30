@@ -12,7 +12,7 @@ import { Shield } from 'lucide-react'
 import { FormField } from '@/components/FormField'
 import { useAuth } from '@/hooks/useAuth'
 import { Link } from 'react-router-dom'
-
+import { toast } from 'sonner'
 
 export function SignUp() {
   const [email, setEmail] = useState('')
@@ -28,12 +28,17 @@ export function SignUp() {
 
     const status = handleSignUp && await handleSignUp(email, dni, password)
 
+    if (status == 400) {
+      toast.error('Credenciales inválidas.')
+    }
+
     if (status === 401 || status === 404) {
-      alert('Sign up failed. Please check your credentials.')
+      toast.error('Error de registro. Por favor verifica tus credenciales.')
     }
 
     setIsLoading(false)
   }
+
 
   return (
     <div className='flex min-h-screen items-center justify-center p-4'>
@@ -60,10 +65,10 @@ export function SignUp() {
             />
             <FormField
               label='DNI'
-              inputType='text'
+              inputType='number'
               placeholder='Ingresa tu DNI'
               value={dni}
-              onChange={(e) => setDni(e.target.value)}
+              onChange={(e) =>  e.target.value >= 0 ? setDni(e.target.value) : null}
               required
             />
             <FormField

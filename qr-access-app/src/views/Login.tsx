@@ -12,6 +12,7 @@ import { Shield } from 'lucide-react'
 import { FormField } from '@/components/FormField'
 import { useAuth } from '@/hooks/useAuth'
 import { Link } from 'react-router-dom'
+import { toast } from 'sonner'
 
 export function Login() {
   const [username, setUsername] = useState('')
@@ -26,8 +27,12 @@ export function Login() {
 
     const status = handleLogin && await handleLogin(username, password)
 
+    if (status == 400) {
+      toast.error('Credenciales inválidas.')
+    }
+
     if (status === 401 || status === 404) {
-      alert('Login failed. Please check your credentials.')
+      toast.error('Error de inicio de sesión. Por favor verifica tus credenciales.')
     }
 
     setIsLoading(false)
