@@ -12,6 +12,7 @@ import {
 import { QrCode, LogOut, CheckCircle, Loader, Check } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { EventSourcePolyfill } from 'event-source-polyfill'
+import { useAuth } from '@/hooks/useAuth'
 
 const apiUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : 'http://localhost:8080';
 
@@ -25,6 +26,8 @@ export function QRDisplay({
 }: QRCodeDisplayProps) {
   const [qrCodeUrl, setQrCodeUrl] = useState('')
   const [isScanned, setIsScanned] = useState(false)
+
+  const {handleLogout} = useAuth();
 
   const onScanned = () => {
     // navigate('/success');
@@ -147,9 +150,9 @@ export function QRDisplay({
 
           <Button
             variant='outline'
-            onClick={onReset}
             className='w-full bg-transparent'
             disabled={isScanned}
+            onClick={handleLogout}
           >
             <LogOut className='w-4 h-4 mr-2' />
             Sign Out

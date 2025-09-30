@@ -93,17 +93,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   const handleLogout = () => {
-    fetch('/api/auth/logout', {
-      method: 'GET',
-      credentials: 'same-origin',
-    })
-      .then((data) => data.json())
-      .then(() => {
-        setUser(null)
-        setLogued(false)
-        navigate('/login')
-      })
-      .catch((e) => console.log('Error: ', e))
+    setUser(null)
+    setLogued(false)
+    localStorage.removeItem('token')
+    navigate('/login')
+
   }
 
   return (
