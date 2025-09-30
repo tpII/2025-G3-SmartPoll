@@ -5,7 +5,7 @@ import time
 
 # Inicia la camara
 cap = cv2.VideoCapture(0)  # 0 = primera camara USB
-api_url = "http://sp-alb-1004216717.us-east-1.elb.amazonaws.com/api/qr/consume/"
+api_url = "https://api.smartpoll.tech/api/qr/consume/"
 
 if not cap.isOpened():
     raise Exception("No se pudo abrir la cámara")
