@@ -7,12 +7,20 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
+
 } from '@/components/ui/card'
 import { Shield } from 'lucide-react'
 import { FormField } from '@/components/FormField'
 import { useAuth } from '@/hooks/useAuth'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
+  CardTitle,
+} from '@/components/ui/card'
+import { Vote, Shield } from 'lucide-react'
+import { FormField } from '@/components/FormField'
+import { useAuth } from '@/hooks/useAuth'
+import { Link } from 'react-router-dom'
+
 
 export function SignUp() {
   const [email, setEmail] = useState('')
@@ -28,6 +36,7 @@ export function SignUp() {
 
     const status = handleSignUp && await handleSignUp(email, dni, password)
 
+
     if (status == 400) {
       toast.error('Credenciales inválidas.')
     }
@@ -38,7 +47,6 @@ export function SignUp() {
 
     setIsLoading(false)
   }
-
 
   return (
     <div className='flex min-h-screen items-center justify-center p-4'>
@@ -103,7 +111,6 @@ export function SignUp() {
               </p>
             </div>
           </form>
-
         </CardContent>
       </Card>
     </div>

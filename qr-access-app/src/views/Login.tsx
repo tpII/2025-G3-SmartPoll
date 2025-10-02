@@ -12,6 +12,7 @@ import { Shield } from 'lucide-react'
 import { FormField } from '@/components/FormField'
 import { useAuth } from '@/hooks/useAuth'
 import { Link } from 'react-router-dom'
+
 import { toast } from 'sonner'
 
 export function Login() {
@@ -33,6 +34,7 @@ export function Login() {
 
     if (status === 401 || status === 404) {
       toast.error('Error de inicio de sesión. Por favor verifica tus credenciales.')
+
     }
 
     setIsLoading(false)
