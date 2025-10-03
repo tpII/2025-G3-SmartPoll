@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import VotingPage from '@/components/voting-page'
 import WaitingPage from '@/components/waiting-page'
+import { Toaster } from '@/components/ui/sonner'
 
 export default function Home() {
   const [isVotingEnabled, setIsVotingEnabled] = useState(false)
@@ -12,6 +13,7 @@ export default function Home() {
       ) : (
         <WaitingPage onEnable={() => setIsVotingEnabled(true)} />
       )}
+      <Toaster richColors />
     </div>
   )
 }
