@@ -15,7 +15,6 @@ interface Candidate {
 
 interface Tav {
   tav: string
-  signature: string
 }
 
 interface VotingPageProps {
@@ -26,34 +25,43 @@ interface VotingPageProps {
 const candidates: Candidate[] = [
   {
     id: '1',
-    name: 'Sarah Johnson',
-    team: 'Innovation Team',
-    image: '/man.jpg',
+    name: 'Juan Schiaretti',
+    team: 'Partido justicialista',
+    image: '/candidates/juan_schiaretti.jpg',
   },
   {
     id: '2',
-    name: 'Michael Chen',
-    team: 'Development Team',
-    image: '/man.jpg',
+    name: 'Horacio Rodríguez Larreta',
+    team: 'Propuesta republicana',
+    image: '/candidates/horacio_rodriguez_larreta.jpg',
   },
-  { id: '3', name: 'Emily Rodriguez', team: 'Design Team', image: '/man.jpg' },
-  { id: '4', name: 'David Kim', team: 'Product Team', image: '/man.jpg' },
+  {
+    id: '3',
+    name: 'Javier Milei',
+    team: 'La libertad avanza',
+    image: '/candidates/javier_milei.jpg',
+  },
+  {
+    id: '4',
+    name: 'Sergio Massa',
+    team: 'Unión por la Patria',
+    image: '/candidates/sergio_massa.jpg',
+  },
   {
     id: '5',
-    name: 'Jessica Williams',
-    team: 'Marketing Team',
-    image: '/man.jpg',
+    name: 'Margarita Stolbizer',
+    team: 'Movimiento Libres del Sur',
+    image: '/candidates/margarita_stolbizer.jpg',
   },
   {
     id: '6',
-    name: 'Robert Taylor',
-    team: 'Operations Team',
-    image: '/man.jpg',
+    name: 'Patricia Bullrich',
+    team: 'Juntos por el Cambio',
+    image: '/candidates/patricia_bullrich.jpg',
   },
 ]
 
-
-export default function VotingPage({tav, onEnable}: VotingPageProps) {
+export default function VotingPage({ tav, onEnable }: VotingPageProps) {
   const [selectedCandidate, setSelectedCandidate] = useState<string | null>(
     null
   )
@@ -69,12 +77,11 @@ export default function VotingPage({tav, onEnable}: VotingPageProps) {
       candidateId: candidate?.id,
       candidateName: candidate?.name,
       tav: tav?.tav,
-      signature: tav?.signature,
       timestamp: new Date().toISOString(),
     }
 
     try {
-      await fetch('http://localhost:8080/vote', {
+      const response = await fetch('http://localhost:8080/vote', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,20 +89,25 @@ export default function VotingPage({tav, onEnable}: VotingPageProps) {
         body: JSON.stringify(votePayload),
       })
 
-      toast.success('Voto emitido con éxito')
-    }
-    catch (error) {
+      const data = await response.json()
+
+      console.log('Vote response:', data)
+      if (!data.ok) {
+        toast.error('Voto anulado por el servidor')
+      } else {
+        toast.success('Voto emitido con éxito')
+      }
+    } catch (error) {
       console.error('Error submitting vote:', error)
       toast.error('Error al enviar el voto')
       return
     }
-    
+
     setTimeout(() => {
       onEnable()
       setHasVoted(false)
       setSelectedCandidate(null)
     }, 5000)
-
   }
 
   return (
@@ -138,7 +150,7 @@ export default function VotingPage({tav, onEnable}: VotingPageProps) {
           </div>
 
           {/* Candidates Grid */}
-          <div className='grid sm:grid-cols-2 gap-4 md:gap-5'>
+          <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5'>
             {candidates.map((candidate) => (
               <CandidateCard
                 key={candidate.id}

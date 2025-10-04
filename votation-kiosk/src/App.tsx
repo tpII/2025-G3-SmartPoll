@@ -5,7 +5,6 @@ import WaitingPage from './views/WaitingPage'
 
 interface Tav {
   tav: string
-  signature: string
 }
 
 function App() {
@@ -19,7 +18,7 @@ function App() {
       const data = JSON.parse(message.data)
       if (data.enabled == true) {
         setIsEnabled(true)
-        setTav({ tav: data.tav, signature: data.signature })
+        setTav({ tav: data.tav })
       }
     }
 

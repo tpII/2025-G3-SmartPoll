@@ -1,4 +1,6 @@
-import { generateTAV } from './utils/tav.ts'
+import { generateTAV, verifyTAV } from './utils/tav.ts'
+import { setVoterTav, getVoterTav } from './redis.js';
+import { TTL } from './utils/consts.js';
 import express from 'express';
 import cors from 'cors';
 const app = express()
@@ -29,26 +31,32 @@ app.get("/events", (req, res) => {
 });
 
 // Endpoint que habilita la votación
-app.post("/authorize-voter", (req, res) => {
+app.post("/authorize-voter", async (req, res) => {
   const { tav, signature } = generateTAV();
 
+  await setVoterTav(tav, signature, TTL);
+
   clients.forEach(client => {
-    client.write(`data: ${JSON.stringify({ enabled: true, tav, signature })}\n\n`);
+    client.write(`data: ${JSON.stringify({ enabled: true, tav })}\n\n`);
   });
 
   res.send({ ok: true });
 });
 
-app.post("/vote", (req, res) => {
-  const { tav, signature, candidateId } = req.body;
-  console.log(req.body);
+app.post("/vote", async (req, res) => {
+  const { tav, candidateId } = req.body;
 
-  // Aquí deberías verificar el TAV y la firma
-  // Si son válidos, registra el voto
+  const voter = await getVoterTav(tav);
+
+  const isValid = voter && verifyTAV(tav, voter.signature);
+
+  if (!isValid) {
+    return res.status(400).send({ ok: false, error: "Invalid TAV or signature" });
+  }
 
   console.log(`Voto recibido para el candidato ${candidateId} con TAV ${tav}`);
 
   res.send({ ok: true });
 })
 
-app.listen(8080, () => console.log("SSE server running on 8080"));
+app.listen(8080, "0.0.0.0", () => console.log("Webserver running on 8080"));

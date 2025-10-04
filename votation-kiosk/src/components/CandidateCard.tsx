@@ -36,8 +36,7 @@ const CandidateCard = ({
             <img
               src={candidate.image || '/placeholder.svg'}
               alt={candidate.name}
-              width={400}
-              height={400}
+              className='w-full aspect-square object-cover border border-border'
             />
           </div>
         <div className='flex items-center gap-4 flex-1 min-w-0 flex-col'>
@@ -49,7 +48,7 @@ const CandidateCard = ({
             <h3 className='text-lg md:text-xl font-semibold text-foreground truncate'>
               {candidate.name}
             </h3>
-            <p className='text-sm text-muted-foreground truncate'>
+            <p className='text-sm text-muted-foreground truncate text-center'>
               {candidate.team}
             </p>
           </div>
