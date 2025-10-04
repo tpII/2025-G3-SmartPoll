@@ -89,6 +89,12 @@ export default function VotingPage({tav, onEnable}: VotingPageProps) {
       toast.error('Error al enviar el voto')
       return
     }
+    
+    setTimeout(() => {
+      onEnable()
+      setHasVoted(false)
+      setSelectedCandidate(null)
+    }, 5000)
 
   }
 
@@ -145,7 +151,7 @@ export default function VotingPage({tav, onEnable}: VotingPageProps) {
           </div>
 
           {/* Submit Button */}
-          <div className='pt-6 flex justify-center'>
+          <div className='sticky bottom-2 pt-6 flex justify-center'>
             <Button
               size='lg'
               onClick={handleVote}

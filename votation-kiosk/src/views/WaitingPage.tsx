@@ -1,10 +1,6 @@
 "use client"
 
-interface WaitingPageProps {
-  onEnable: () => void
-}
-
-export default function WaitingPage({ onEnable }: WaitingPageProps) {
+export default function WaitingPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-background via-secondary/30 to-background p-4 m-auto">
       <div className="text-center space-y-8 animate-fade-in">

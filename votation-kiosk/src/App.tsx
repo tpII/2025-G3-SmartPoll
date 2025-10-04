@@ -33,7 +33,7 @@ function App() {
       {isEnabled ? (
         <VotingPage tav={tav} onEnable={() => setIsEnabled(false)} />
       ) : (
-        <WaitingPage onEnable={() => setIsEnabled(true)} />
+        <WaitingPage/>
       )}
     </>
   )
