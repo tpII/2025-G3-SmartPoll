@@ -30,13 +30,6 @@ export default function WaitingPage({ onEnable }: WaitingPageProps) {
             </p>
           </div>
 
-          {/* Demo button - remove in production */}
-          <button
-            onClick={onEnable}
-            className="mt-8 px-6 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors border border-border rounded-lg"
-          >
-            Start Voting (Demo)
-          </button>
         </div>
       </div>
     </div>

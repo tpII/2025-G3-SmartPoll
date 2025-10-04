@@ -3,17 +3,23 @@ import './App.css'
 import VotingPage from './views/VotingPage'
 import WaitingPage from './views/WaitingPage'
 
+interface Tav {
+  tav: string
+  signature: string
+}
+
 function App() {
-  const [isEnable, setIsEnable] = useState(false)
+  const [isEnabled, setIsEnabled] = useState(false)
+  const [tav, setTav] = useState<Tav | null>(null)
 
   useEffect(() => {
     const event = new EventSource('http://localhost:8080/events')
 
     event.onmessage = (message) => {
       const data = JSON.parse(message.data)
-      console.log('Received event:', data)
-      if (data.type === 'voting_enabled') {
-        setIsEnable(true)
+      if (data.enabled == true) {
+        setIsEnabled(true)
+        setTav({ tav: data.tav, signature: data.signature })
       }
     }
 
@@ -24,11 +30,11 @@ function App() {
 
   return (
     <>
-      {isEnable ? (
-        <VotingPage />
+      {isEnabled ? (
+        <VotingPage tav={tav} onEnable={() => setIsEnabled(false)} />
       ) : (
-        <WaitingPage onEnable={() => setIsEnable(true)} />
-      )}  
+        <WaitingPage onEnable={() => setIsEnabled(true)} />
+      )}
     </>
   )
 }

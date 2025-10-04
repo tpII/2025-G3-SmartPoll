@@ -13,6 +13,16 @@ interface Candidate {
   image: string
 }
 
+interface Tav {
+  tav: string
+  signature: string
+}
+
+interface VotingPageProps {
+  tav: Tav | null
+  onEnable: () => void
+}
+
 const candidates: Candidate[] = [
   {
     id: '1',
@@ -42,19 +52,44 @@ const candidates: Candidate[] = [
   },
 ]
 
-export default function VotingPage() {
+
+export default function VotingPage({tav, onEnable}: VotingPageProps) {
   const [selectedCandidate, setSelectedCandidate] = useState<string | null>(
     null
   )
   const [hasVoted, setHasVoted] = useState(false)
 
-  const handleVote = () => {
+  const handleVote = async () => {
     if (!selectedCandidate) return
 
     setHasVoted(true)
     const candidate = candidates.find((c) => c.id === selectedCandidate)
 
-    toast.success('Voto emitido con éxito')
+    const votePayload = {
+      candidateId: candidate?.id,
+      candidateName: candidate?.name,
+      tav: tav?.tav,
+      signature: tav?.signature,
+      timestamp: new Date().toISOString(),
+    }
+
+    try {
+      await fetch('http://localhost:8080/vote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(votePayload),
+      })
+
+      toast.success('Voto emitido con éxito')
+    }
+    catch (error) {
+      console.error('Error submitting vote:', error)
+      toast.error('Error al enviar el voto')
+      return
+    }
+
   }
 
   return (
