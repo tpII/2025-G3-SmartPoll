@@ -10,30 +10,55 @@ import smartpoll.backend.entity.QrStatusEntity;
 import smartpoll.backend.entity.VoterEntity;
 import smartpoll.backend.exception.NotFoundException;
 import smartpoll.backend.repository.QRStatusRepository;
+
 import java.io.IOException;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 public class QRService {
 
-    @Autowired QRStatusRepository qrStatusRepository;
+    @Autowired
+    QRStatusRepository qrStatusRepository;
+
     private final ExecutorService executor = Executors.newCachedThreadPool();
 
     public SseEmitter generateQR(VoterEntity voter) {
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
         executor.execute(() -> {
             try {
+                String lastStatus = null;
+                UUID token = getOrCreateQR(voter);
+
                 while (true) {
                     Thread.sleep(1000);
-                    emitter.send(SseEmitter.event()
-                            .name("qrStatus")
-                            .data(Map.of("status", "waiting", "token", getQRFromVoter(voter))));
+
+                    Optional<QrStatusEntity> qrOpt = qrStatusRepository.findByToken(token);
+                    if (qrOpt.isEmpty()) {
+                        throw new NotFoundException("QR not found");
+                    }
+
+                    QrStatusEntity qrStatus = qrOpt.get();
+                    String currentStatus = qrStatus.getConsumed() ? "scanned" : "waiting";
+
+                    if (!currentStatus.equals(lastStatus)) {
+                        emitter.send(SseEmitter.event()
+                                .name("qrStatus")
+                                .data(Map.of("status", currentStatus, "token", token)));
+                        lastStatus = currentStatus;
+                    }
+
+                    if (qrStatus.getConsumed()) {
+                        emitter.complete();
+                        break;
+                    }
                 }
+
+            } catch (IOException | InterruptedException e) {
+                emitter.completeWithError(e);
             } catch (NotFoundException ex) {
                 try {
                     emitter.send(SseEmitter.event()
@@ -42,15 +67,13 @@ public class QRService {
                 } catch (IOException ignored) {
                 }
                 emitter.complete();
-            } catch (IOException | InterruptedException e) {
-                emitter.completeWithError(e);
             }
         });
 
         return emitter;
     }
 
-    private UUID getQRFromVoter(VoterEntity voter) {
+    private UUID getOrCreateQR(VoterEntity voter) {
         Optional<QrStatusEntity> qrStatusEntity = qrStatusRepository.findByVoter(voter);
         if (qrStatusEntity.isEmpty()) {
             QrStatusEntity qrStatus = new QrStatusEntity();
@@ -59,18 +82,20 @@ public class QRService {
             return qrStatus.getToken();
         }
         QrStatusEntity qrStatus = qrStatusEntity.get();
-        if(qrStatus.getConsumed()) {
+        if (qrStatus.getConsumed()) {
             throw new NotFoundException("Consumed QR");
         }
-
         return qrStatus.getToken();
     }
 
     public QRResponse consumeQR(UUID token) {
-        QrStatusEntity qrStatusEntity = qrStatusRepository.findByToken(token).orElseThrow(() -> new NotFoundException("Invalid token"));
-        if(qrStatusEntity.getConsumed()) {
+        QrStatusEntity qrStatusEntity = qrStatusRepository.findByToken(token)
+                .orElseThrow(() -> new NotFoundException("Invalid token"));
+
+        if (qrStatusEntity.getConsumed()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "QR has already been consumed");
         }
+
         qrStatusEntity.setConsumed(true);
         qrStatusRepository.save(qrStatusEntity);
         return null;
