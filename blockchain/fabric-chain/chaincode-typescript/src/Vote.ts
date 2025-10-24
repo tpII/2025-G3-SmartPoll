@@ -1,6 +1,6 @@
 import { Object, Property } from 'fabric-contract-api';
 export const VoteOption = {
-    MACRI: 'Macri gato',
+    MACRI: 'Macri',
     MILEI: 'Milei',
     CFK: 'CFK'
 } as const;

@@ -3,7 +3,7 @@ import { setVoterTav, getVoterTav } from './redis.ts';
 import { TTL } from './utils/consts.ts';
 import express from 'express';
 import cors from 'cors';
-import { blockchainGateway } from './importAdminIdentity.ts';
+import { VotingClient } from './VotingClient.ts';
 const app = express()
 let clients = [];
 
@@ -57,14 +57,30 @@ app.post("/vote", async (req, res) => {
 
   console.log(`Voto recibido para el candidato ${candidateId} con TAV ${tav}`);
 
+
+  const client = new VotingClient();
+
   try {
-    await blockchainGateway(tav, "election1", candidateId);
+    await client.castVote(tav, "election1", candidateId);
   } catch (error) {
     console.error("Error en la transacción:", error);
     return res.status(500).send({ ok: false, error: "Error en la transacción" });
   }
 
   res.send({ ok: true });
+})
+
+app.post("/get-votes", async (req, res) => {
+
+  try {
+    const client = new VotingClient();
+    const results = await client.getVotes();
+    const parsedResults = JSON.parse(results);
+    return res.send({ electionId: 1 , results: parsedResults });
+  } catch (error) {
+    console.error("Error en la transacción:", error);
+    return res.status(500).send({ ok: false, error: "Error en la transacción" });
+  }
 })
 
 app.listen(8080, "0.0.0.0", () => console.log("Webserver running on 8080"));

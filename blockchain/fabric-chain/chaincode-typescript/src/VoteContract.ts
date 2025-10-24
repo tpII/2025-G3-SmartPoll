@@ -25,8 +25,6 @@ export class VoteContract extends Contract {
         tav: string,
         option: VoteOption
     ): Promise<void> {
-
-
         const clientID = ctx.clientIdentity.getID();
         if (!clientID.includes("admin")) {
             throw new Error("Permission denied: only Admin can create votes. CLIENTID ====== " + clientID);
@@ -75,4 +73,35 @@ export class VoteContract extends Contract {
         }
         return JSON.stringify(allResults);
     }
+
+    @Transaction(false)
+    public async CountVotes(ctx: Context): Promise<string> {
+        const clientID = ctx.clientIdentity.getID();
+        if (!clientID.includes("admin")) {
+            throw new Error("Permission denied: only admin can audit votes");
+        }
+
+        const iterator = await ctx.stub.getStateByRange('', '');
+        const counts: Record<string, number> = {};
+
+        let result = await iterator.next();
+        while (!result.done) {
+            const strValue = result.value.value.toString('utf8');
+            try {
+                const record = JSON.parse(strValue);
+                const option = record.option;
+                counts[option] = (counts[option] || 0) + 1;
+            } catch {
+                // ignorar errores de parseo
+            }
+            result = await iterator.next();
+        }
+
+        await iterator.close();
+
+        return JSON.stringify(counts);
+    }
+
+
+
 }
