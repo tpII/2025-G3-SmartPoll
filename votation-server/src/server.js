@@ -3,6 +3,7 @@ import { setVoterTav, getVoterTav } from './redis.js';
 import { TTL } from './utils/consts.js';
 import express from 'express';
 import cors from 'cors';
+import { blockchainGateway } from './importAdminIdentity.js';
 const app = express()
 let clients = [];
 
@@ -55,6 +56,13 @@ app.post("/vote", async (req, res) => {
   }
 
   console.log(`Voto recibido para el candidato ${candidateId} con TAV ${tav}`);
+
+  try {
+    await blockchainGateway(tav, "election1", candidateId);
+  } catch (error) {
+    console.error("Error en la transacción:", error);
+    return res.status(500).send({ ok: false, error: "Error en la transacción" });
+  }
 
   res.send({ ok: true });
 })
