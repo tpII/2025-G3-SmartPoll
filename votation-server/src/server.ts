@@ -1,9 +1,9 @@
 import { generateTAV, verifyTAV } from './utils/tav.ts'
-import { setVoterTav, getVoterTav } from './redis.js';
-import { TTL } from './utils/consts.js';
+import { setVoterTav, getVoterTav } from './redis.ts';
+import { TTL } from './utils/consts.ts';
 import express from 'express';
 import cors from 'cors';
-import { blockchainGateway } from './importAdminIdentity.js';
+import { blockchainGateway } from './importAdminIdentity.ts';
 const app = express()
 let clients = [];
 

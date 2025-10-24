@@ -21,14 +21,15 @@ export class VoteContract extends Contract {
     @Transaction()
     public async CreateVote(
         ctx: Context,
-        role: string,
         electionID: string,
         tav: string,
         option: VoteOption
     ): Promise<void> {
 
-        if (role !== 'admin') {
-            throw new Error(`You don't have the permission WRONG ROLE`);
+
+        const clientID = ctx.clientIdentity.getID();
+        if (!clientID.includes("admin")) {
+            throw new Error("Permission denied: only Admin can create votes. CLIENTID ====== " + clientID);
         }
 
         const exists = await this.VoteExists(ctx, tav);
