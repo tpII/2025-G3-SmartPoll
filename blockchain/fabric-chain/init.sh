@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ./test-network/network.sh down
 ./test-network/network.sh up createChannel -ca -s couchdb
 ./test-network/network.sh deployCC -ccn basic -ccp ../chaincode-typescript/ -ccl typescript
