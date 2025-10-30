@@ -1,12 +1,21 @@
 {
+	"name": "votation-server",
+	"version": "1.0.0",
+	"description": "",
+	"license": "ISC",
+	"author": "",
+	"type": "module",
+	"main": "src/server.ts",
 	"scripts": {
 		"dev": "nodemon",
-		"start": "node src/server.js"
+		"start": "node src/server.ts"
 	},
 	"dependencies": {
+		"@hyperledger/fabric-gateway": "^1.9.0",
 		"cors": "^2.8.5",
 		"express": "^5.1.0",
-		"redis": "^5.8.3"
+		"redis": "^5.8.3",
+		"typescript": "^5.9.3"
 	},
 	"devDependencies": {
 		"nodemon": "^3.1.10"
