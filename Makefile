@@ -12,7 +12,7 @@ all: up
 blockchain:
 	@echo "Iniciando blockchain..."
 	@chmod +x $(BLOCKCHAIN_INIT)
-	@cd $(BLOCKCHAIN_DIR) && ./init.sh &> /dev/null
+	@cd $(BLOCKCHAIN_DIR) && ./init.sh
 	@echo "Blockchain iniciada."
 
 compose:

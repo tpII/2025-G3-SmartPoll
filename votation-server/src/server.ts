@@ -57,7 +57,6 @@ app.post("/vote", async (req, res) => {
 
   console.log(`Voto recibido para el candidato ${candidateId} con TAV ${tav}`);
 
-
   const client = new VotingClient();
 
   try {
@@ -70,7 +69,7 @@ app.post("/vote", async (req, res) => {
   res.send({ ok: true });
 })
 
-app.post("/get-votes", async (req, res) => {
+app.get("/get-votes", async (req, res) => {
 
   try {
     const client = new VotingClient();

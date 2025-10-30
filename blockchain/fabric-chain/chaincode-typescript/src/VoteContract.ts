@@ -1,16 +1,12 @@
 import {Context, Contract, Info, Returns, Transaction} from 'fabric-contract-api';
-import {Vote, VoteOption} from './Vote';
+import { Vote, UUID } from './Vote';
 
 @Info({title: 'VoteContract', description: 'Smart contract for managing votes'})
 export class VoteContract extends Contract {
 
     @Transaction()
     public async InitLedger(ctx: Context): Promise<void> {
-        const assets: Vote[] = [
-            { electionID: 'election1', tav: '551fafac', option: VoteOption.MACRI },
-            { electionID: 'election1', tav: '042b4e924b5f80', option: VoteOption.MILEI },
-            { electionID: 'election2', tav: '9277ee1a', option: VoteOption.CFK },
-        ];
+        const assets: Vote[] = [];
 
         for (const asset of assets) {
             await ctx.stub.putState(asset.tav, Buffer.from(JSON.stringify(asset)));
@@ -23,7 +19,7 @@ export class VoteContract extends Contract {
         ctx: Context,
         electionID: string,
         tav: string,
-        option: VoteOption
+        option: UUID
     ): Promise<void> {
         const clientID = ctx.clientIdentity.getID();
         if (!clientID.includes("admin")) {
