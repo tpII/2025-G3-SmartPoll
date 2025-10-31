@@ -6,7 +6,13 @@ export class VoteContract extends Contract {
 
     @Transaction()
     public async InitLedger(ctx: Context): Promise<void> {
-        const assets: Vote[] = [];
+        const assets: Vote[] = [
+            {electionID: 'election1', tav: '551fafac', option: 'c18c6e9d-bc74-4b72-9f7e-ef7e2c7a1a91' as UUID},
+            {electionID: 'election1', tav: '561tafsd', option: 'c18c6e9d-bc74-4b72-9f7e-ef7e2c7a1a91' as UUID},
+            {electionID: 'election1', tav: '9277ee1a', option: 'c18c6e9d-bc74-4b72-9f7e-ef7e2c7a1a91' as UUID},
+            {electionID: 'election1', tav: '042b4e92', option: 'b21d7a3c-5f48-4e8a-bef0-203b7a6c3d22' as UUID},
+            {electionID: 'election1', tav: '12dhzs3a', option: 'a63f82e7-7f3e-470a-8f5a-10d9e8dfc145' as UUID},
+        ];
 
         for (const asset of assets) {
             await ctx.stub.putState(asset.tav, Buffer.from(JSON.stringify(asset)));

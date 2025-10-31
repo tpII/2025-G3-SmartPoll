@@ -33,7 +33,7 @@ export default function App() {
         setCandidates(candidatesData)
 
         // Fetch vote results
-        const votesRes = await fetch("/votes.json")
+        const votesRes = await fetch("http://localhost:8080/get-votes")
         const votesData = await votesRes.json()
         setVoteResults(votesData)
       } catch (error) {
