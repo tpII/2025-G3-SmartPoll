@@ -2,44 +2,89 @@ import cv2
 from pyzbar.pyzbar import decode
 import requests
 import time
+import threading
+from flask import Flask, request
 
-# Inicia la camara
-cap = cv2.VideoCapture(0)  # 0 = primera camara USB
+# --- Configuración ---
 api_url = "https://api.smartpoll.tech/api/qr/consume/"
+voting_ui_url = "http://192.168.9.2:8080/authorize-voter"  # reemplazar por el endpoint de tu interfaz LAN
+camera_index = 0
 
-if not cap.isOpened():
-    raise Exception("No se pudo abrir la cámara")
-
-print("Esperando QR...")
-
+# --- Estado global ---
+scanning_enabled = False
 last_qr = None
 
-try:
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            continue
+# --- Servidor HTTP para controlar el flujo ---
+app = Flask(__name__)
 
-        # decodifica QR en el frame
-        codes = decode(frame)
+@app.route("/start", methods=["POST"])
+def start_scanning():
+    global scanning_enabled
+    scanning_enabled = True
+    print("[INFO] Escaneo habilitado (start recibido)")
+    return {"status": "ok", "message": "Escaneo habilitado"}
 
-        for code in codes:
-            qr_data = code.data.decode('utf-8')
-            if qr_data != last_qr:  # evita repeticiones
-                print(f"QR detectado: {qr_data}")
-                try:
-                    url = api_url + qr_data
-                    r = requests.post(url, timeout=5)
-                    print(f"Request a {url} -> {r.status_code}")
-                    print(r.text)
-                except Exception as e:
-                    print(f"Error al hacer request: {e}")
+@app.route("/resume", methods=["POST"])
+def resume_scanning():
+    global scanning_enabled, last_qr
+    last_qr = None
+    scanning_enabled = True
+    print("[INFO] Reanudando escaneo tras votación")
+    return {"status": "ok", "message": "Escaneo reanudado"}
 
-                last_qr = qr_data
-                time.sleep(2)  # pausa para no saturar
+def run_server():
+    app.run(host="0.0.0.0", port=5000, debug=False)
 
-except KeyboardInterrupt:
-    print("Saliendo...")
-finally:
-    cap.release()
-    cv2.destroyAllWindows()
+# --- Función principal de escaneo ---
+def qr_scanner():
+    global scanning_enabled, last_qr
+
+    cap = cv2.VideoCapture(camera_index)
+    if not cap.isOpened():
+        raise Exception("No se pudo abrir la cámara")
+
+    print("[INFO] Sistema iniciado en estado BLOQUEADO.")
+    print("Esperando señal de /start para comenzar...")
+
+    try:
+        while True:
+            if not scanning_enabled:
+                time.sleep(0.2)
+                continue
+
+            ret, frame = cap.read()
+            if not ret:
+                continue
+
+            codes = decode(frame)
+            for code in codes:
+                qr_data = code.data.decode("utf-8")
+                if qr_data != last_qr:
+                    print(f"[QR DETECTADO] {qr_data}")
+                    try:
+                        # Request al backend
+                        r = requests.post(api_url + qr_data, timeout=5)
+                        print(f"SmartPoll → {r.status_code}: {r.text}")
+
+                        # Notificar a la interfaz local de votación
+                        requests.post(voting_ui_url, json={"qr": qr_data}, timeout=5)
+                        print(f"Notificado a interfaz LAN: {voting_ui_url}")
+
+                        # Bloqueamos nuevamente hasta /resume
+                        scanning_enabled = False
+                        last_qr = qr_data
+                        print("[INFO] Escaneo bloqueado. Esperando /resume...")
+                    except Exception as e:
+                        print(f"[ERROR] Request fallido: {e}")
+                    time.sleep(1)
+
+    except KeyboardInterrupt:
+        print("Saliendo...")
+    finally:
+        cap.release()
+        cv2.destroyAllWindows()
+
+# --- Ejecución concurrente ---
+if __name__ == "__main__":
+    threading.Thread(target=run_server, daemon=True).start()
+    qr_scanner()
