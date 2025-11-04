@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Vote, Check } from 'lucide-react'
 import { toast } from 'sonner'
@@ -22,56 +22,36 @@ interface VotingPageProps {
   onEnable: () => void
 }
 
-const candidates: Candidate[] = [
-  {
-    id: '1',
-    name: 'Juan Schiaretti',
-    team: 'Partido justicialista',
-    image: '/candidates/juan_schiaretti.jpg',
-  },
-  {
-    id: '2',
-    name: 'Horacio Rodríguez Larreta',
-    team: 'Propuesta republicana',
-    image: '/candidates/horacio_rodriguez_larreta.jpg',
-  },
-  {
-    id: '3',
-    name: 'Javier Milei',
-    team: 'La libertad avanza',
-    image: '/candidates/javier_milei.jpg',
-  },
-  {
-    id: '4',
-    name: 'Sergio Massa',
-    team: 'Unión por la Patria',
-    image: '/candidates/sergio_massa.jpg',
-  },
-  {
-    id: '5',
-    name: 'Margarita Stolbizer',
-    team: 'Movimiento Libres del Sur',
-    image: '/candidates/margarita_stolbizer.jpg',
-  },
-  {
-    id: '6',
-    name: 'Patricia Bullrich',
-    team: 'Juntos por el Cambio',
-    image: '/candidates/patricia_bullrich.jpg',
-  },
-]
-
 export default function VotingPage({ tav, onEnable }: VotingPageProps) {
   const [selectedCandidate, setSelectedCandidate] = useState<string | null>(
     null
   )
   const [hasVoted, setHasVoted] = useState(false)
+  const [candidates, setCandidates] = useState<Candidate[]>([])
+
+  useEffect(() => {
+    let mounted = true
+    const load = async () => {
+      try {
+        const res = await fetch('/candidates.json')
+        if (!res.ok) throw new Error(`Failed to load candidates: ${res.status}`)
+        const data: Candidate[] = await res.json()
+        if (mounted) setCandidates(data)
+      } catch (err) {
+        console.error('Error loading candidates:', err)
+      }
+    }
+    load()
+    return () => {
+      mounted = false
+    }
+  }, [])
 
   const handleVote = async () => {
     if (!selectedCandidate) return
 
     setHasVoted(true)
-    const candidate = candidates.find((c) => c.id === selectedCandidate)
+  const candidate = candidates.find((c: Candidate) => c.id === selectedCandidate)
 
     const votePayload = {
       candidateId: candidate?.id,

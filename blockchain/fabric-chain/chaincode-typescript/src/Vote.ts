@@ -1,11 +1,7 @@
 import { Object, Property } from 'fabric-contract-api';
-export const VoteOption = {
-    MACRI: 'Macri',
-    MILEI: 'Milei',
-    CFK: 'CFK'
-} as const;
+import { v4 as uuidv4 } from "uuid";
+export type UUID = string & { readonly __uuidBrand: unique symbol };
 
-export type VoteOption = typeof VoteOption[keyof typeof VoteOption];
 
 @Object()
 export class Vote {             
@@ -16,5 +12,9 @@ export class Vote {
     public tav: string;
 
     @Property()
-    public option: VoteOption;
+    public option: UUID;
+
+    constructor() {
+        this.option = uuidv4() as UUID;
+    }
 }

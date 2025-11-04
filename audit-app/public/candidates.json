@@ -1,0 +1,30 @@
+[
+  {
+    "id": "c18c6e9d-bc74-4b72-9f7e-ef7e2c7a1a91",
+    "name": "Martina López",
+    "team": "Frente Renovador",
+    "image": "/candidates/martina_lopez.webp",
+    "color": "#8b5cf6"
+  },
+  {
+    "id": "e72f1c8a-3a1e-45cb-91a3-7a3122f0dce5",
+    "name": "Julián Fernández",
+    "team": "Unión Federal",
+    "image": "/candidates/julian_fernandez.webp",
+    "color": "#3b82f6"
+  },
+  {
+    "id": "b21d7a3c-5f48-4e8a-bef0-203b7a6c3d22",
+    "name": "Camila Pereyra",
+    "team": "Movimiento Popular",
+    "image": "/candidates/camila_pereyra.webp",
+    "color": "#ec4899"
+  },
+  {
+    "id": "a63f82e7-7f3e-470a-8f5a-10d9e8dfc145",
+    "name": "Tomás Álvarez",
+    "team": "Partido Progreso",
+    "image": "/candidates/tomas_alvarez.webp",
+    "color": "#f59e0b"
+  }
+]
