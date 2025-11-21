@@ -109,5 +109,5 @@ async function waitForRaspberryPi() {
   }
 }
 
-// await waitForRaspberryPi()
+await waitForRaspberryPi()
 app.listen(8080, '0.0.0.0', () => console.log('Webserver running on 8080'))
