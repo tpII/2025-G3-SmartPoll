@@ -12,20 +12,26 @@ all: up
 blockchain:
 	@echo "Iniciando blockchain..."
 	@chmod +x $(BLOCKCHAIN_INIT)
-	@cd $(BLOCKCHAIN_DIR) && ./init.sh
+	@cd $(BLOCKCHAIN_DIR) && ./init.sh &> /dev/null
 	@echo "Blockchain iniciada."
 
 compose:
 	@echo "Levantando stack de Docker..."
 	@docker compose -f $(COMPOSE_FILE) up -d --build &> /dev/null
 
-up: blockchain compose
-	@echo "Blockchain + Docker corriendo."
+explorer:
+	@echo "Iniciando Hyperledger Explorer..."
+	@cd ./blockchain/explorer && docker compose -f docker-compose.yml up -d --build &> /dev/null
+	@echo "Hyperledger Explorer iniciado."
+
+up: blockchain compose explorer
+	@echo "Blockchain + Docker corriendo + explorer."
 
 down:
 	@echo "Bajando stack de Docker..."
 	@chmod +x $(BLOCKCHAIN_DOWN)
-	@docker compose -f $(COMPOSE_FILE) down &> /dev/null
+	@cd ./blockchain/explorer && docker compose -f docker-compose.yml down -v &> /dev/null
+	@docker compose -f $(COMPOSE_FILE) down -v &> /dev/null
 	@cd $(BLOCKCHAIN_DIR) && ./down.sh &> /dev/null
 
 clean: down
