@@ -12,7 +12,7 @@ all: up
 blockchain:
 	@echo "Iniciando blockchain..."
 	@chmod +x $(BLOCKCHAIN_INIT)
-	@cd $(BLOCKCHAIN_DIR) && ./init.sh &> /dev/null
+	@cd $(BLOCKCHAIN_DIR) && ./init.sh 
 	@echo "Blockchain iniciada."
 
 compose:
@@ -21,7 +21,7 @@ compose:
 
 explorer:
 	@echo "Iniciando Hyperledger Explorer..."
-	@cd ./blockchain/explorer && docker compose -f docker-compose.yml up -d --build &> /dev/null
+	@cd ./blockchain/explorer && docker compose -f docker-compose.yml up --build 
 	@echo "Hyperledger Explorer iniciado."
 
 up: blockchain compose explorer
