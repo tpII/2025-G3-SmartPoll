@@ -19,6 +19,8 @@ interface VoteResults {
   results: Record<string, number>
 }
 
+const NULL_VOTES_UUID = "00000000-0000-0000-0000-000000000000"
+
 export default function App() {
   const [candidates, setCandidates] = useState<Candidate[]>([])
   const [voteResults, setVoteResults] = useState<VoteResults | null>(null)
@@ -62,6 +64,10 @@ export default function App() {
     )
   }
 
+  const nullVotes = voteResults.results[NULL_VOTES_UUID] || 0
+  const candidateVotes = { ...voteResults.results }
+  delete candidateVotes[NULL_VOTES_UUID]
+
   // Calculate total votes
   const totalVotes = Object.values(voteResults.results).reduce((sum, votes) => sum + votes, 0)
 
@@ -74,6 +80,7 @@ export default function App() {
 
   // Sort by votes descending
   candidatesWithVotes.sort((a, b) => b.votes - a.votes)
+
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
@@ -105,6 +112,24 @@ export default function App() {
             </Card>
           </div>
         </div>
+        {nullVotes > 0 && (
+          <Card className="mt-8 md:mt-12 p-6 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-50 mb-1">Votos Nulos</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  Votos que no fueron asignados a ningún candidato
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-4xl font-bold text-slate-900 dark:text-slate-50">{nullVotes.toLocaleString()}</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                  {((nullVotes / (totalVotes + nullVotes)) * 100).toFixed(2)}%
+                </p>
+              </div>
+            </div>
+          </Card>
+        )}
       </div>
     </div>
   )
