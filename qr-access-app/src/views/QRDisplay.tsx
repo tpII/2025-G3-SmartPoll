@@ -150,7 +150,6 @@ export function QRDisplay({
           <Button
             variant='outline'
             className='w-full bg-transparent'
-            disabled={isScanned}
             onClick={handleLogout}
           >
             <LogOut className='w-4 h-4 mr-2' />
