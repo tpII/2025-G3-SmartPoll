@@ -2,9 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Vote, Check } from 'lucide-react'
+import { Vote, Check, Clock } from 'lucide-react'
 import { toast } from 'sonner'
 import CandidateCard from '@/components/CandidateCard'
+
+
+const TIME_LIMIT = 60 // seconds
+const NULL_VOTE_PAYLOAD = "00000000-0000-0000-0000-000000000000"
 
 interface Candidate {
   id: string
@@ -28,7 +32,9 @@ export default function VotingPage({ tav, onEnable }: VotingPageProps) {
   )
   const [hasVoted, setHasVoted] = useState(false)
   const [candidates, setCandidates] = useState<Candidate[]>([])
+  const [timeRemaining, setTimeRemaining] = useState(TIME_LIMIT)
 
+  // Load candidates
   useEffect(() => {
     let mounted = true
     const load = async () => {
@@ -46,6 +52,60 @@ export default function VotingPage({ tav, onEnable }: VotingPageProps) {
       mounted = false
     }
   }, [])
+
+  // Timer effect
+  useEffect(() => {
+    if (hasVoted) return
+
+    const handleNullVote = async () => {
+      setHasVoted(true)
+
+      const votePayload = {
+        candidateId: NULL_VOTE_PAYLOAD,
+        candidateName: "Voto Nulo",
+        tav: tav?.tav,
+        timestamp: new Date().toISOString(),
+      }
+
+      try {
+        const response = await fetch('http://localhost:8080/vote', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(votePayload),
+        })
+
+        const data = await response.json()
+        console.log('Null vote response:', data)
+        
+        toast.warning('Tiempo agotado. Voto nulo emitido')
+      } catch (error) {
+        console.error('Error submitting null vote:', error)
+        toast.error('Error al enviar el voto nulo')
+      }
+
+      setTimeout(() => {
+        onEnable()
+        setHasVoted(false)
+        setSelectedCandidate(null)
+        setTimeRemaining(TIME_LIMIT)
+      }, 3000)
+    }
+
+    const timer = setInterval(() => {
+      setTimeRemaining((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer)
+          handleNullVote()
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [hasVoted, tav, onEnable])
 
   const handleVote = async () => {
     if (!selectedCandidate) return
@@ -109,12 +169,22 @@ export default function VotingPage({ tav, onEnable }: VotingPageProps) {
               <p className='text-xs text-muted-foreground'>Elecciones 2025</p>
             </div>
           </div>
-          {hasVoted && (
-            <div className='flex items-center gap-2 text-sm text-accent font-medium'>
-              <Check className='w-4 h-4' />
-              <span>Voto emitido</span>
-            </div>
-          )}
+          <div className='flex items-center gap-4'>
+            {!hasVoted && (
+              <div className={`flex items-center gap-2 text-sm font-medium ${
+                timeRemaining <= 10 ? 'text-destructive' : 'text-muted-foreground'
+              }`}>
+                <Clock className='w-4 h-4' />
+                <span>{Math.floor(timeRemaining / 60)}:{String(timeRemaining % 60).padStart(2, '0')}</span>
+              </div>
+            )}
+            {hasVoted && (
+              <div className='flex items-center gap-2 text-sm text-accent font-medium'>
+                <Check className='w-4 h-4' />
+                <span>Voto emitido</span>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 

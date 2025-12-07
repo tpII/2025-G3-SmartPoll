@@ -63,9 +63,10 @@ public class QRController {
                     @ApiResponse(responseCode = "409", description = "Conflict - QR has already been consumed", content = @Content)
             }
     )
-    @PostMapping("/consume/{token}")
+    @PostMapping("/consume")
     @ResponseStatus(HttpStatus.OK)
-    public QRResponse consumeQR(@Valid @PathVariable UUID token) {
-        return qrService.consumeQR(token);
+    public QRResponse consumeQR(@RequestParam("token") String rawToken) {
+        return qrService.consumeQR(rawToken);
     }
+
 }
