@@ -9,14 +9,8 @@ import {
   CardHeader,
 
 } from '@/components/ui/card'
-import { Shield } from 'lucide-react'
-import { FormField } from '@/components/FormField'
-import { useAuth } from '@/hooks/useAuth'
-import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
-  CardTitle,
-} from '@/components/ui/card'
-import { Vote, Shield } from 'lucide-react'
+import { Shield } from 'lucide-react'
 import { FormField } from '@/components/FormField'
 import { useAuth } from '@/hooks/useAuth'
 import { Link } from 'react-router-dom'
@@ -62,7 +56,7 @@ export function SignUp() {
           </div>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className='space-y-4'>
+            <form onSubmit={handleSubmit} className='space-y-4'>
             <FormField
               label='Email'
               inputType='text'
@@ -76,7 +70,12 @@ export function SignUp() {
               inputType='number'
               placeholder='Ingresa tu DNI'
               value={dni}
-              onChange={(e) =>  e.target.value >= 0 ? setDni(e.target.value) : null}
+              onChange={(e) => {
+              const numValue = Number(e.target.value);
+              if (!isNaN(numValue) && numValue >= 0) {
+                setDni(e.target.value);
+              }
+              }}
               required
             />
             <FormField

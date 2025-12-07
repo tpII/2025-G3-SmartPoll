@@ -1,0 +1,40 @@
+services:
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - fabric_test 
+
+  server:
+    build: ./votation-server
+    container_name: webserver
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./votation-server/.env
+    volumes:
+      - ./blockchain/fabric-chain/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp:/app/keys
+    depends_on:
+      - redis
+    networks:
+      - fabric_test 
+
+
+  kiosk:
+    build: ./votation-kiosk
+    container_name: kiosk
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - server
+    networks:
+      - fabric_test 
+
+
+networks:
+  fabric_test:
+    external: true

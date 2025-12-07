@@ -17,9 +17,7 @@ function App() {
           <Route
             path='/'
             element={
-              <QRDisplay
-                onReset={() => console.log('Reset')}
-              />
+              <QRDisplay/>
             }
           />
         </Route>
