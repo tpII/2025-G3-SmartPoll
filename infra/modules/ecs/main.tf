@@ -34,7 +34,7 @@ resource "aws_launch_template" "ecs_nodes" {
   name_prefix            = "${var.cluster_name}-lt-"
   image_id               = var.ec2_ecs_optimized_ami_id
   instance_type          = var.instance_type
-  vpc_security_group_ids = [var.ec2_instance_security_group_id, aws_security_group.allow_from_alb.id]
+  vpc_security_group_ids = [aws_security_group.allow_http_ecs.id, aws_security_group.allow_from_alb.id]
 
   block_device_mappings {
     device_name = "/dev/sdf"
@@ -96,14 +96,14 @@ resource "aws_ecs_task_definition" "this" {
   requires_compatibilities = ["EC2"]
   network_mode             = "awsvpc"
   cpu                      = "256"
-  memory                   = "512"
+  memory                   = "768"
 
   container_definitions = jsonencode([
     {
       name      = var.container_name
       image     = var.image_url
       cpu       = 256
-      memory    = 512
+      memory    = 768
       essential = true
       portMappings = [
         {
@@ -111,20 +111,48 @@ resource "aws_ecs_task_definition" "this" {
           hostPort      = 8080
         }
       ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.ecs_logs.name
+          "awslogs-region"        = "us-east-1"
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
     }
   ])
 }
 
 resource "aws_security_group" "allow_from_alb" {
-  name        = "allow_all_traffic"
+  name        = "allow_from_alb"
   description = "Security group to allow all inbound and outbound traffic"
   vpc_id      = var.vpc_id
 
   ingress {
-    security_groups = var.elb_security_group_id
+    security_groups = var.elb_security_groups_id
     from_port       = 8080
     to_port         = 8080
     protocol        = "tcp"
+  }
+
+  egress {
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+    to_port     = 0
+    from_port   = 0
+  }
+}
+
+resource "aws_security_group" "allow_http_ecs"{
+  name        = "allow_http_ecs"
+  description = "Security group to allow HTTP traffic"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
   }
 
   egress {
@@ -153,4 +181,9 @@ resource "aws_ecs_service" "this" {
     security_groups  = [aws_security_group.allow_from_alb.id]
     assign_public_ip = false
   }
+}
+
+resource "aws_cloudwatch_log_group" "ecs_logs" {
+  name              = "/ecs/${var.service_name}"
+  retention_in_days = 5
 }

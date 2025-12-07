@@ -11,5 +11,4 @@ variable "load_balancer_tg_arn" {}
 variable "vpc_id" {}
 variable "private_subnets_id" {}
 variable "ec2_ecs_optimized_ami_id" {}
-variable "elb_security_group_id" {}
-variable "ec2_instance_security_group_id" {}
+variable "elb_security_groups_id" {}

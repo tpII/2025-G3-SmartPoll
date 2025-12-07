@@ -119,3 +119,13 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
+
+variable "alb_certificate_arn" {
+  description = "ARN of the SSL certificate"
+  type        = string
+}
+
+variable "cloudfront_certificate_arn" {
+  description = "ARN of the SSL certificate"
+  type        = string
+}

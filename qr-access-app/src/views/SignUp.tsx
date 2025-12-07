@@ -7,9 +7,10 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
+
 } from '@/components/ui/card'
-import { Vote, Shield } from 'lucide-react'
+import { toast } from 'sonner'
+import { Shield } from 'lucide-react'
 import { FormField } from '@/components/FormField'
 import { useAuth } from '@/hooks/useAuth'
 import { Link } from 'react-router-dom'
@@ -29,8 +30,13 @@ export function SignUp() {
 
     const status = handleSignUp && await handleSignUp(email, dni, password)
 
+
+    if (status == 400) {
+      toast.error('Credenciales inválidas.')
+    }
+
     if (status === 401 || status === 404) {
-      alert('Sign up failed. Please check your credentials.')
+      toast.error('Error de registro. Por favor verifica tus credenciales.')
     }
 
     setIsLoading(false)
@@ -41,41 +47,41 @@ export function SignUp() {
       <Card className='w-full max-w-md shadow-lg'>
         <CardHeader className='text-center space-y-4'>
           <div className='flex justify-center'>
-            <div className='flex items-center justify-center w-16 h-16 bg-primary rounded-full'>
-              <Vote className='w-8 h-8 text-primary-foreground' />
-            </div>
+              <img className='size-48' src='/smartpoll_title.svg' alt='Smartpoll Logo' />
           </div>
           <div>
-            <CardTitle className='text-2xl font-bold text-balance'>
-              Secure Voting System
-            </CardTitle>
             <CardDescription className='text-muted-foreground'>
-              Enter your credentials to access the voting platform
+              Crea una cuenta para acceder a la plataforma de votación
             </CardDescription>
           </div>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className='space-y-4'>
+            <form onSubmit={handleSubmit} className='space-y-4'>
             <FormField
               label='Email'
               inputType='text'
-              placeholder='Enter your email'
+              placeholder='Ingresa tu email'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
             <FormField
               label='DNI'
-              inputType='text'
-              placeholder='Enter your DNI'
+              inputType='number'
+              placeholder='Ingresa tu DNI'
               value={dni}
-              onChange={(e) => setDni(e.target.value)}
+              onChange={(e) => {
+              const numValue = Number(e.target.value);
+              if (!isNaN(numValue) && numValue >= 0) {
+                setDni(e.target.value);
+              }
+              }}
               required
             />
             <FormField
-              label='Password'
+              label='Contraseña'
               inputType='password'
-              placeholder='Enter your password'
+              placeholder='Ingresa tu contraseña'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -87,29 +93,23 @@ export function SignUp() {
               onClick={() => handleSignUp(email, dni, password)}
             >
               {isLoading ? (
-                <div className='flex items-center gap-2'>
-                  <div className='w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin' />
-                  Authenticating...
-                </div>
+              <div className='flex items-center gap-2'>
+                <div className='w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin' />
+                Autenticando...
+              </div>
               ) : (
-                <div className='flex items-center gap-2'>
-                  <Shield className='w-4 h-4' />
-                  Sign Up 
-                </div>
+              <div className='flex items-center gap-2'>
+                <Shield className='w-4 h-4' />
+                Registrarse
+              </div>
               )}
             </Button>
             <div className='mt-4 text-center'>
               <p className='text-sm text-muted-foreground'>
-                Already have an account? <Link to='/login' className='text-primary'>Log in</Link>
+              ¿Ya tienes una cuenta? <Link to='/login' className='text-primary'>Iniciar sesión</Link>
               </p>
             </div>
-          </form>
-
-          <div className='mt-6 text-center'>
-            <p className='text-sm text-muted-foreground'>
-              Secure authentication powered by advanced encryption
-            </p>
-          </div>
+            </form>
         </CardContent>
       </Card>
     </div>
