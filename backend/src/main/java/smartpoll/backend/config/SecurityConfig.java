@@ -55,6 +55,7 @@ public class SecurityConfig {
                                 "/api/auth/signin",
                                 "/api/auth/signup",
                                 "/health",
+                                "/api/qr-scan-attempt/**",
                                 "/api/qr/consume/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
