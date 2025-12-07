@@ -39,6 +39,10 @@ export function SignUp() {
       toast.error('Error de registro. Por favor verifica tus credenciales.')
     }
 
+    if (status === 409) {
+      toast.error('El mail o DNI ya están registrados.')
+    }
+
     setIsLoading(false)
   }
 
