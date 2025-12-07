@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Vote, Check } from 'lucide-react'
 import { toast } from 'sonner'
@@ -130,15 +131,23 @@ export default function VotingPage({ tav, onEnable }: VotingPageProps) {
           </div>
 
           {/* Candidates Grid */}
-          <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5'>
+          <div className='flex flex-wrap justify-center gap-4 md:gap-5'>
             {candidates.map((candidate) => (
-              <CandidateCard
+              <div 
                 key={candidate.id}
-                candidate={candidate}
-                selectedCandidate={selectedCandidate}
-                hasVoted={hasVoted}
-                setSelectedCandidate={setSelectedCandidate}
-              />
+                className={`w-full ${
+                  candidates.length <= 4 
+                    ? 'sm:w-[calc(50%-0.5rem)] sm:max-w-sm' 
+                    : 'sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.875rem)] sm:max-w-sm'
+                }`}
+              >
+                <CandidateCard
+                  candidate={candidate}
+                  selectedCandidate={selectedCandidate}
+                  hasVoted={hasVoted}
+                  setSelectedCandidate={setSelectedCandidate}
+                />
+              </div>
             ))}
           </div>
 

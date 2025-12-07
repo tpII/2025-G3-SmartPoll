@@ -88,7 +88,7 @@ export class VoteContract extends Contract {
 
         let result = await iterator.next();
         while (!result.done) {
-            const strValue = result.value.value.toString('utf8');
+            const strValue = result.value.value.toString();
             try {
                 const record = JSON.parse(strValue);
                 const option = record.option;
