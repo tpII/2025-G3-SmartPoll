@@ -29,7 +29,7 @@
     "Org1MSP": {
       "mspid": "Org1MSP",
       "adminPrivateKey": {
-        "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/e4498a27bc65ed746158f106e1832f200ef1d2e7ff39ae4bc36bb81b8ab5192d_sk"
+        "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/1f8d4162b820e7597e4d667db6d449a6ffc328c05bf999eb56171c9eea94535f_sk"
       },
       "peers": [
         "peer0.org1.example.com"
