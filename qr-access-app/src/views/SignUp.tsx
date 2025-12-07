@@ -39,6 +39,10 @@ export function SignUp() {
       toast.error('Error de registro. Por favor verifica tus credenciales.')
     }
 
+    if (status === 409) {
+      toast.error('El mail o DNI ya están registrados.')
+    }
+
     setIsLoading(false)
   }
 
@@ -93,23 +97,23 @@ export function SignUp() {
               onClick={() => handleSignUp(email, dni, password)}
             >
               {isLoading ? (
-              <div className='flex items-center gap-2'>
-                <div className='w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin' />
-                Autenticando...
-              </div>
+                <div className='flex items-center gap-2'>
+                  <div className='w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin' />
+                  Autenticando...
+                </div>
               ) : (
-              <div className='flex items-center gap-2'>
-                <Shield className='w-4 h-4' />
-                Registrarse
-              </div>
+                <div className='flex items-center gap-2'>
+                  <Shield className='w-4 h-4' />
+                  Registrarse
+                </div>
               )}
             </Button>
             <div className='mt-4 text-center'>
               <p className='text-sm text-muted-foreground'>
-              ¿Ya tienes una cuenta? <Link to='/login' className='text-primary'>Iniciar sesión</Link>
+                ¿Ya tienes una cuenta? <Link to='/login' className='text-primary'>Iniciar sesión</Link>
               </p>
             </div>
-            </form>
+          </form>
         </CardContent>
       </Card>
     </div>
