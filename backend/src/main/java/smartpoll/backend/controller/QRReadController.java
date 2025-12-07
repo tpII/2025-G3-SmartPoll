@@ -23,28 +23,7 @@ public class QRReadController {
 
     @Autowired
     QRReadService qrReadService;
-
-    @Operation(
-            summary = "Register a QR scan attempt",
-            description = """
-        Registers the result of a QR scan attempt. 
-        This does NOT consume or invalidate a QR code — it only records 
-        whether the scanned QR was correct, invalid, already used, or if a network/error occurred.
-        """,
-            responses = {
-                    @ApiResponse(responseCode = "201", description = "QR scan event successfully recorded"),
-                    @ApiResponse(responseCode = "400", description = "Invalid request format", content = @Content),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized - missing or invalid credentials", content = @Content)
-            }
-    )
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createQR(@RequestBody @Valid QRReadRequest qrReadRequest) {
-        qrReadService.createQRRead(qrReadRequest);
-    }
-
-
-
+    
     @Operation(
             summary = "List QR scan attempts",
             description = """

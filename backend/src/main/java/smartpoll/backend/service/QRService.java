@@ -5,10 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import smartpoll.backend.dto.QRReadRequest;
 import smartpoll.backend.dto.QRResponse;
+import smartpoll.backend.entity.QRReadEventEntity;
 import smartpoll.backend.entity.QrStatusEntity;
 import smartpoll.backend.entity.VoterEntity;
 import smartpoll.backend.exception.NotFoundException;
+import smartpoll.backend.repository.QRReadRepository;
 import smartpoll.backend.repository.QRStatusRepository;
 
 import java.io.IOException;
@@ -23,6 +26,9 @@ public class QRService {
 
     @Autowired
     QRStatusRepository qrStatusRepository;
+
+    @Autowired
+    QRReadService qrReadService;
 
     private final ExecutorService executor = Executors.newCachedThreadPool();
 
@@ -88,16 +94,41 @@ public class QRService {
         return qrStatus.getToken();
     }
 
-    public QRResponse consumeQR(UUID token) {
+    public QRResponse consumeQR(String rawToken) {
+
+        UUID token = null;
+        try {
+            token = UUID.fromString(rawToken);
+        } catch (IllegalArgumentException e) {
+            qrReadService.createQRRead(new QRReadRequest(QRReadEventEntity.QRScanStatus.INVALID_QR));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token is not a valid UUID");
+        }
+
         QrStatusEntity qrStatusEntity = qrStatusRepository.findByToken(token)
-                .orElseThrow(() -> new NotFoundException("Invalid token"));
+                .map(entity -> entity)
+                .orElseGet(() -> {
+                    qrReadService.createQRRead(
+                            new QRReadRequest(QRReadEventEntity.QRScanStatus.INVALID_QR)
+                    );
+                    throw new NotFoundException("Invalid token");
+                });
 
         if (qrStatusEntity.getConsumed()) {
+            qrReadService.createQRRead(
+                    new QRReadRequest(QRReadEventEntity.QRScanStatus.ALREADY_USED)
+            );
             throw new ResponseStatusException(HttpStatus.CONFLICT, "QR has already been consumed");
         }
 
         qrStatusEntity.setConsumed(true);
         qrStatusRepository.save(qrStatusEntity);
+
+        qrReadService.createQRRead(
+                new QRReadRequest(QRReadEventEntity.QRScanStatus.SUCCESS)
+        );
+
         return null;
     }
+
+
 }
