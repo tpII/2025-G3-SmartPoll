@@ -26,7 +26,7 @@ blockchain:
 
 compose:
 	@echo "Levantando stack de Docker..."
-	@docker compose -f $(COMPOSE_FILE) up -d --build &> /dev/null
+	@docker compose -f $(COMPOSE_FILE) up -d --build
 
 explorer:
 	@echo "Iniciando Hyperledger Explorer..."

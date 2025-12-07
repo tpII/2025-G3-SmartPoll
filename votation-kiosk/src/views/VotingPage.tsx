@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Vote, Check } from 'lucide-react'
 import { toast } from 'sonner'
