@@ -62,7 +62,7 @@ app.post('/vote', async (req, res) => {
       .send({ ok: false, error: 'Invalid TAV or signature' })
   }
 
-  console.log(`Voto recibido para el candidato ${candidateId} con TAV ${tav}`)
+  console.log(`Voto recibido para el candidato ${candidateId} con TAV ${tav}`);
 
   const client = new VotingClient()
 
@@ -84,7 +84,8 @@ app.post('/vote', async (req, res) => {
   res.send({ ok: true })
 })
 
-app.get('/get-votes', async (req, res) => {
+app.get("/get-votes", async (req, res) => {
+
   try {
     const client = new VotingClient()
     const results = await client.getVotes()

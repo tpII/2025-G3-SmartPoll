@@ -1,186 +1,193 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Vote, Check, Clock } from 'lucide-react'
-import { toast } from 'sonner'
-import CandidateCard from '@/components/CandidateCard'
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Vote, Check, Clock } from "lucide-react";
+import { toast } from "sonner";
+import CandidateCard from "@/components/CandidateCard";
 
-
-const TIME_LIMIT = 60 // seconds
-const NULL_VOTE_PAYLOAD = "00000000-0000-0000-0000-000000000000"
+const TIME_LIMIT = 60; // seconds
+const NULL_VOTE_PAYLOAD = "00000000-0000-0000-0000-000000000000";
 
 interface Candidate {
-  id: string
-  name: string
-  team: string
-  image: string
+  id: string;
+  name: string;
+  team: string;
+  image: string;
 }
 
 interface Tav {
-  tav: string
+  tav: string;
 }
 
 interface VotingPageProps {
-  tav: Tav | null
-  onEnable: () => void
+  tav: Tav | null;
+  onEnable: () => void;
 }
 
 export default function VotingPage({ tav, onEnable }: VotingPageProps) {
   const [selectedCandidate, setSelectedCandidate] = useState<string | null>(
     null
-  )
-  const [hasVoted, setHasVoted] = useState(false)
-  const [candidates, setCandidates] = useState<Candidate[]>([])
-  const [timeRemaining, setTimeRemaining] = useState(TIME_LIMIT)
+  );
+  const [hasVoted, setHasVoted] = useState(false);
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [timeRemaining, setTimeRemaining] = useState(TIME_LIMIT);
 
   // Load candidates
   useEffect(() => {
-    let mounted = true
+    let mounted = true;
     const load = async () => {
       try {
-        const res = await fetch('/candidates.json')
-        if (!res.ok) throw new Error(`Failed to load candidates: ${res.status}`)
-        const data: Candidate[] = await res.json()
-        if (mounted) setCandidates(data)
+        const res = await fetch("/candidates.json");
+        if (!res.ok)
+          throw new Error(`Failed to load candidates: ${res.status}`);
+        const data: Candidate[] = await res.json();
+        if (mounted) setCandidates(data);
       } catch (err) {
-        console.error('Error loading candidates:', err)
+        console.error("Error loading candidates:", err);
       }
-    }
-    load()
+    };
+    load();
     return () => {
-      mounted = false
-    }
-  }, [])
+      mounted = false;
+    };
+  }, []);
 
   // Timer effect
   useEffect(() => {
-    if (hasVoted) return
+    if (hasVoted) return;
 
     const handleNullVote = async () => {
-      setHasVoted(true)
+      setHasVoted(true);
 
       const votePayload = {
         candidateId: NULL_VOTE_PAYLOAD,
         candidateName: "Voto Nulo",
         tav: tav?.tav,
         timestamp: new Date().toISOString(),
-      }
+      };
 
       try {
-        const response = await fetch('http://localhost:8080/vote', {
-          method: 'POST',
+        const response = await fetch("http://localhost:8080/vote", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(votePayload),
-        })
+        });
 
-        const data = await response.json()
-        console.log('Null vote response:', data)
-        
-        toast.warning('Tiempo agotado. Voto nulo emitido')
+        const data = await response.json();
+        console.log("Null vote response:", data);
+
+        toast.warning("Tiempo agotado. Voto nulo emitido");
       } catch (error) {
-        console.error('Error submitting null vote:', error)
-        toast.error('Error al enviar el voto nulo')
+        console.error("Error submitting null vote:", error);
+        toast.error("Error al enviar el voto nulo");
       }
 
       setTimeout(() => {
-        onEnable()
-        setHasVoted(false)
-        setSelectedCandidate(null)
-        setTimeRemaining(TIME_LIMIT)
-      }, 3000)
-    }
+        onEnable();
+        setHasVoted(false);
+        setSelectedCandidate(null);
+        setTimeRemaining(TIME_LIMIT);
+      }, 3000);
+    };
 
     const timer = setInterval(() => {
       setTimeRemaining((prev) => {
         if (prev <= 1) {
-          clearInterval(timer)
-          handleNullVote()
-          return 0
+          clearInterval(timer);
+          handleNullVote();
+          return 0;
         }
-        return prev - 1
-      })
-    }, 1000)
+        return prev - 1;
+      });
+    }, 1000);
 
-    return () => clearInterval(timer)
-  }, [hasVoted, tav, onEnable])
+    return () => clearInterval(timer);
+  }, [hasVoted, tav, onEnable]);
 
   const handleVote = async () => {
-    if (!selectedCandidate) return
+    if (!selectedCandidate) return;
 
-    setHasVoted(true)
+    setHasVoted(true);
     const candidate = candidates.find(
       (c: Candidate) => c.id === selectedCandidate
-    )
+    );
 
     const votePayload = {
       candidateId: candidate?.id,
       candidateName: candidate?.name,
       tav: tav?.tav,
       timestamp: new Date().toISOString(),
-    }
+    };
 
     try {
-      const response = await fetch('http://localhost:8080/vote', {
-        method: 'POST',
+      const response = await fetch("http://localhost:8080/vote", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(votePayload),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
-      console.log('Vote response:', data)
+      console.log("Vote response:", data);
       if (!data.ok) {
-        toast.error('Voto anulado por el servidor')
+        toast.error("Voto anulado por el servidor");
       } else {
-        toast.success('Voto emitido con éxito')
+        toast.success("Voto emitido con éxito");
       }
     } catch (error) {
-      console.error('Error submitting vote:', error)
-      toast.error('Error al enviar el voto')
-      return
+      console.error("Error submitting vote:", error);
+      toast.error("Error al enviar el voto");
+      return;
     }
 
     setTimeout(() => {
-      onEnable()
-      setHasVoted(false)
-      setSelectedCandidate(null)
-    }, 5000)
-  }
+      onEnable();
+      setHasVoted(false);
+      setSelectedCandidate(null);
+    }, 5000);
+  };
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background'>
+    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
       {/* Header */}
-      <header className='border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10'>
-        <div className='container mx-auto px-4 py-4 flex items-center justify-between'>
-          <div className='flex items-center gap-3'>
+      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
             <img
-              src='/smartpoll.svg'
-              alt='Smartpoll Logo'
+              src="/smartpoll.svg"
+              alt="Smartpoll Logo"
               width={48}
               height={48}
             />
             <div>
-              <h1 className='text-xl font-bold text-foreground'>Smartpoll</h1>
-              <p className='text-xs text-muted-foreground'>Elecciones 2025</p>
+              <h1 className="text-xl font-bold text-foreground">Smartpoll</h1>
+              <p className="text-xs text-muted-foreground">Elecciones 2025</p>
             </div>
           </div>
-          <div className='flex items-center gap-4'>
+          <div className="flex items-center gap-4">
             {!hasVoted && (
-              <div className={`flex items-center gap-2 text-sm font-medium ${
-                timeRemaining <= 10 ? 'text-destructive' : 'text-muted-foreground'
-              }`}>
-                <Clock className='w-4 h-4' />
-                <span>{Math.floor(timeRemaining / 60)}:{String(timeRemaining % 60).padStart(2, '0')}</span>
+              <div
+                className={`flex items-center gap-2 text-sm font-medium ${
+                  timeRemaining <= 10
+                    ? "text-destructive"
+                    : "text-muted-foreground"
+                }`}
+              >
+                <Clock className="w-4 h-4" />
+                <span>
+                  {Math.floor(timeRemaining / 60)}:
+                  {String(timeRemaining % 60).padStart(2, "0")}
+                </span>
               </div>
             )}
             {hasVoted && (
-              <div className='flex items-center gap-2 text-sm text-accent font-medium'>
-                <Check className='w-4 h-4' />
+              <div className="flex items-center gap-2 text-sm text-accent font-medium">
+                <Check className="w-4 h-4" />
                 <span>Voto emitido</span>
               </div>
             )}
@@ -189,27 +196,27 @@ export default function VotingPage({ tav, onEnable }: VotingPageProps) {
       </header>
 
       {/* Main Content */}
-      <main className='container mx-auto px-4 py-8 md:py-12 max-w-4xl'>
-        <div className='space-y-6'>
+      <main className="container mx-auto px-4 py-8 md:py-12 max-w-4xl">
+        <div className="space-y-6">
           {/* Instructions */}
-          <div className='text-center space-y-2 mb-8'>
-            <h2 className='text-3xl md:text-4xl font-bold text-foreground text-balance'>
+          <div className="text-center space-y-2 mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground text-balance">
               Emite tu voto
             </h2>
-            <p className='text-muted-foreground text-balance'>
+            <p className="text-muted-foreground text-balance">
               Seleccione un candidato a continuación para enviar su voto
             </p>
           </div>
 
           {/* Candidates Grid */}
-          <div className='flex flex-wrap justify-center gap-4 md:gap-5'>
+          <div className="flex flex-wrap justify-center gap-4 md:gap-5">
             {candidates.map((candidate) => (
-              <div 
+              <div
                 key={candidate.id}
                 className={`w-full ${
-                  candidates.length <= 4 
-                    ? 'sm:w-[calc(50%-0.5rem)] sm:max-w-sm' 
-                    : 'sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.875rem)] sm:max-w-sm'
+                  candidates.length <= 4
+                    ? "sm:w-[calc(50%-0.5rem)] sm:max-w-sm"
+                    : "sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.875rem)] sm:max-w-sm"
                 }`}
               >
                 <CandidateCard
@@ -223,21 +230,21 @@ export default function VotingPage({ tav, onEnable }: VotingPageProps) {
           </div>
 
           {/* Submit Button */}
-          <div className='sticky bottom-2 pt-6 flex justify-center'>
+          <div className="sticky bottom-2 pt-6 flex justify-center">
             <Button
-              size='lg'
+              size="lg"
               onClick={handleVote}
               disabled={!selectedCandidate || hasVoted}
-              className='w-full md:w-auto min-w-[200px] text-base font-semibold'
+              className="w-full md:w-auto min-w-[200px] text-base font-semibold"
             >
               {hasVoted ? (
                 <>
-                  <Check className='w-5 h-5 mr-2' />
+                  <Check className="w-5 h-5 mr-2" />
                   Voto emitido
                 </>
               ) : (
                 <>
-                  <Vote className='w-5 h-5 mr-2' />
+                  <Vote className="w-5 h-5 mr-2" />
                   Emitir voto
                 </>
               )}
@@ -246,5 +253,5 @@ export default function VotingPage({ tav, onEnable }: VotingPageProps) {
         </div>
       </main>
     </div>
-  )
+  );
 }

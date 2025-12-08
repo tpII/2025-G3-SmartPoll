@@ -21,12 +21,12 @@ prepare:
 blockchain:
 	@echo "Iniciando blockchain..."
 	@chmod +x $(BLOCKCHAIN_INIT)
-	@cd $(BLOCKCHAIN_DIR) && ./init.sh &> /dev/null
+	@cd $(BLOCKCHAIN_DIR) && ./init.sh
 	@echo "Blockchain iniciada."
 
 compose:
 	@echo "Levantando stack de Docker..."
-	@docker compose -f $(COMPOSE_FILE) up -d --build &> /dev/null
+	@docker compose -f $(COMPOSE_FILE) up -d --build
 
 explorer:
 	@echo "Iniciando Hyperledger Explorer..."
