@@ -8,6 +8,8 @@ export default defineConfig(({ mode }) => {
 
 
   const API_URL = env.VITE_API_URL || 'http://localhost:8080'
+  const QR_API_URL = env.VITE_QR_API_URL || 'http://localhost:3001'
+  
   return {
     plugins: [react(), tailwindcss()],
     server: {
@@ -16,6 +18,11 @@ export default defineConfig(({ mode }) => {
           target: API_URL,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+        '/qr-api': {
+          target: QR_API_URL,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/qr-api/, '/api'),
         },
       },
     },

@@ -31,7 +31,7 @@ export function VotePieChart({ data }: VotePieChartProps) {
           cx="50%"
           cy="50%"
           labelLine={false}
-          label={({ percentage }) => `${percentage.toFixed(2)}%`}
+          label={({ percentage }: any) => `${percentage.toFixed(2)}%`}
           outerRadius={120}
           fill="#8884d8"
           dataKey="value"
@@ -52,7 +52,10 @@ export function VotePieChart({ data }: VotePieChartProps) {
         <Legend
           verticalAlign="bottom"
           height={36}
-          formatter={(value) => <span className="text-sm text-slate-700 dark:text-slate-300">{value}</span>}
+          formatter={(value) => value}
+          wrapperStyle={{
+            fontSize: "14px",
+          }}
         />
       </PieChart>
     </ResponsiveContainer>
