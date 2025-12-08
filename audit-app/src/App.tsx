@@ -54,11 +54,10 @@ export default function App() {
 
         // Process QR scan data for console
         const scanSummary: Record<string, number> = {};
-        
         qrData.content.forEach((scan) => {
-          scanSummary[scan.qrScanStatus] = (scanSummary[scan.qrScanStatus] || 0) + 1;
+          scanSummary[scan.qrScanStatus] =
+            (scanSummary[scan.qrScanStatus] || 0) + 1;
         });
-
       } catch (error) {
         console.error("[v0] Error fetching data:", error);
       } finally {
@@ -66,7 +65,14 @@ export default function App() {
       }
     }
 
+    // Fetch immediately
     fetchData();
+
+    // Fetch every 2 seconds
+    const interval = setInterval(fetchData, 2000);
+
+    // Cleanup
+    return () => clearInterval(interval);
   }, []);
 
   if (loading) {
@@ -93,13 +99,11 @@ export default function App() {
   const candidateVotes = { ...voteResults.results };
   delete candidateVotes[NULL_VOTES_UUID];
 
-  // Calculate total votes
   const totalVotes = Object.values(voteResults.results).reduce(
     (sum, votes) => sum + votes,
     0
   );
 
-  // Merge candidates with their vote counts
   const candidatesWithVotes = candidates.map((candidate) => ({
     ...candidate,
     votes: voteResults.results[candidate.id] || 0,
@@ -109,7 +113,6 @@ export default function App() {
         : 0,
   }));
 
-  // Sort by votes descending
   candidatesWithVotes.sort((a, b) => b.votes - a.votes);
 
   return (
@@ -152,6 +155,7 @@ export default function App() {
               </h2>
               <VotePieChart data={candidatesWithVotes} />
             </Card>
+
             {nullVotes > 0 && (
               <Card className="mt-8 md:mt-12 p-6 dark:bg-slate-800 border-slate-200 dark:border-slate-700">
                 <div className="flex items-center justify-between">
