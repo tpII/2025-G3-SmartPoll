@@ -7,7 +7,7 @@ from flask import Flask, request
 from RPLCD.i2c import CharLCD
 
 # --- Configuración ---
-api_url = "https://api.smartpoll.tech/api/qr/consume/"
+api_url = "https://api.smartpoll.tech/api/qr/consume"
 voting_ui_url = "http://192.168.9.2:8080/authorize-voter"
 camera_index = 0
 
@@ -100,8 +100,9 @@ def qr_scanner():
                     update_lcd("QR Detectado", "Verificando...")
 
                     try:
-                        # 1. Request al backend
-                        r = requests.post(api_url + qr_data, timeout=5)
+                        r = requests.post(api_url, params={"token": qr_data}, timeout=5)
+
+                        print(f"URL Generada: {r.url}")
                         print(f"SmartPoll -> {r.status_code}: {r.text}")
 
                         # --- CASO ÉXITO (200-299) ---
@@ -120,11 +121,19 @@ def qr_scanner():
 
                         # --- CASO ERROR (409, 404, etc) ---
                         else:
-                            # Mensaje específico según error
-                            if r.status_code == 409 or "ya voto" in r.text.lower():
-                                update_lcd("Error: Ya Voto", "QR Duplicado")
+                            error_text = r.text
+
+                            if "already been consumed" in error_text:
+                                # Caso 1: Ya fue usado
+                                update_lcd("Error: Ya Voto", "QR Consumido")
+
+                            elif "not a valid UUID" in error_text:
+                                # Caso 2: Formato inválido (basura, url, etc)
+                                update_lcd("Error Formato", "QR Invalido")
+
                             else:
-                                update_lcd("Error Codigo", "Invalido/Usado")
+                                # Caso 3: Otro error desconocido
+                                update_lcd("Error Sistema", "Rechazado")
 
                             # Actualizamos last_qr para que no intente mandar el mismo error
                             # 20 veces por segundo mientras el papel sigue ahí.

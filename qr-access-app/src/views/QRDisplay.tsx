@@ -16,8 +16,13 @@ import { useAuth } from '@/hooks/useAuth'
 
 const apiUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : 'http://localhost:8080';
 
+interface QRCodeDisplayProps {
+  onReset: () => void
+}
 
-export function QRDisplay() {
+export function QRDisplay({
+  onReset,
+}: QRCodeDisplayProps) {
   const [qrCodeUrl, setQrCodeUrl] = useState('')
   const [isScanned, setIsScanned] = useState(false)
 
@@ -145,7 +150,6 @@ export function QRDisplay() {
           <Button
             variant='outline'
             className='w-full bg-transparent'
-            disabled={isScanned}
             onClick={handleLogout}
           >
             <LogOut className='w-4 h-4 mr-2' />

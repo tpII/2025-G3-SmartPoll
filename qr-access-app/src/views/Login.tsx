@@ -37,6 +37,10 @@ export function Login() {
 
     }
 
+    if (status === 409) {
+      toast.error('El usuario ya tiene una sesión activa.')
+    }
+
     setIsLoading(false)
   }
 
