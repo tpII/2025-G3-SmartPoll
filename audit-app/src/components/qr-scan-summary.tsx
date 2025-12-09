@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui/card"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts"
-
+import { QRScansByHour } from "@/components/qr-scan-by-hour";
 export interface QRScanAttempt {
   createdAt: number
   qrScanStatus: string
@@ -105,6 +105,7 @@ export function QRScanSummary({ scanAttempts }: QRScanSummaryProps) {
             </BarChart>
           </ResponsiveContainer>
         </div>
+        <QRScansByHour scanAttempts={scanAttempts} />
       </Card>
     </div>
   )
