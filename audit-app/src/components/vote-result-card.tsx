@@ -38,9 +38,9 @@ export function VoteResultCard({ candidate, rank }: VoteResultCardProps) {
         {/* Vote Stats */}
         <div className="shrink-0 text-right">
           <div className="text-3xl font-bold mb-1" style={{ color: candidate.color }}>
-            {candidate.percentage.toFixed(2)}%
+            {candidate.percentage.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
           </div>
-          <div className="text-sm text-slate-600 dark:text-slate-400">{candidate.votes.toLocaleString()} votos</div>
+          <div className="text-sm text-slate-600 dark:text-slate-400">{candidate.votes.toLocaleString('es-AR')} votos</div>
         </div>
       </div>
 

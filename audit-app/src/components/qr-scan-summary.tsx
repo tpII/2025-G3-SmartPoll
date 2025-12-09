@@ -40,6 +40,42 @@ export function QRScanSummary({ scanAttempts }: QRScanSummaryProps) {
   const successCount = statusCounts["SUCCESS"] || 0
   const errorCount = (statusCounts["INVALID_QR"] || 0) + (statusCounts["ALREADY_USED"] || 0)
 
+  // Custom tooltip para mostrar el color de la barra
+  interface TooltipProps {
+    active?: boolean;
+    payload?: Array<{
+      value: number;
+      payload: {
+        status: string;
+        color: string;
+      };
+    }>;
+  }
+
+  const CustomTooltip = ({ active, payload }: TooltipProps) => {
+    if (active && payload && payload.length) {
+      const data = payload[0];
+      const color = data.payload.color;
+      return (
+        <div
+          style={{
+            backgroundColor: "#1f2937",
+            border: "1px solid #374151",
+            borderRadius: "8px",
+            padding: "12px",
+            color: "#fff",
+          }}
+        >
+          <p style={{ color: "#fff", marginBottom: "4px" }}>{data.payload.status}</p>
+          <p style={{ color: color, fontWeight: "bold" }}>
+            Cantidad: {data.value.toLocaleString('es-AR')} intentos
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="space-y-6">
       <Card className="p-6 shadow-lg">
@@ -47,7 +83,7 @@ export function QRScanSummary({ scanAttempts }: QRScanSummaryProps) {
 
         <div className="mb-8 p-6 bg-blue-50 dark:bg-blue-950 rounded-lg border-2 border-blue-500">
           <p className="text-sm font-semibold text-blue-700 dark:text-blue-300 mb-2">TOTAL DE ESCANEOS</p>
-          <p className="text-5xl font-bold text-slate-900 dark:text-slate-50">{totalScans}</p>
+          <p className="text-5xl font-bold text-slate-900 dark:text-slate-50">{totalScans.toLocaleString('es-AR')}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -57,9 +93,9 @@ export function QRScanSummary({ scanAttempts }: QRScanSummaryProps) {
               <div className="w-4 h-4 rounded-full bg-green-500" />
               <p className="text-sm font-semibold text-green-700 dark:text-green-300">EXITOSOS</p>
             </div>
-            <p className="text-4xl font-bold text-slate-900 dark:text-slate-50 mb-1">{successCount}</p>
+            <p className="text-4xl font-bold text-slate-900 dark:text-slate-50 mb-1">{successCount.toLocaleString('es-AR')}</p>
             <p className="text-lg text-slate-600 dark:text-slate-400">
-              ({((successCount / totalScans) * 100).toFixed(2)}%)
+              ({((successCount / totalScans) * 100).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%)
             </p>
           </div>
 
@@ -69,9 +105,9 @@ export function QRScanSummary({ scanAttempts }: QRScanSummaryProps) {
               <div className="w-4 h-4 rounded-full bg-red-500" />
               <p className="text-sm font-semibold text-red-700 dark:text-red-300">ERRORES</p>
             </div>
-            <p className="text-4xl font-bold text-slate-900 dark:text-slate-50 mb-1">{errorCount}</p>
+            <p className="text-4xl font-bold text-slate-900 dark:text-slate-50 mb-1">{errorCount.toLocaleString('es-AR')}</p>
             <p className="text-lg text-slate-600 dark:text-slate-400">
-              ({((errorCount / totalScans) * 100).toFixed(2)}%)
+              ({((errorCount / totalScans) * 100).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%)
             </p>
           </div>
         </div>
@@ -82,21 +118,7 @@ export function QRScanSummary({ scanAttempts }: QRScanSummaryProps) {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="status" />
               <YAxis />
-              <Tooltip
-                formatter={(value: any) => [`${value} intentos`, "Cantidad"]}
-                contentStyle={{
-                  backgroundColor: "#1f2937",
-                  border: "1px solid #374151",
-                  borderRadius: "8px",
-                  color: "#fff",
-                }}
-                itemStyle={{
-                  color: "#fff",
-                }}
-                labelStyle={{
-                  color: "#fff",
-                }}
-              />
+              <Tooltip content={<CustomTooltip />} />
               <Bar dataKey="count" radius={[8, 8, 0, 0]}>
                 {chartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />

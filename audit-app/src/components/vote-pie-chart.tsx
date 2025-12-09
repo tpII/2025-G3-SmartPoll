@@ -31,7 +31,11 @@ export function VotePieChart({ data }: VotePieChartProps) {
           cx="50%"
           cy="50%"
           labelLine={false}
-          label={({ percentage }: any) => `${percentage.toFixed(2)}%`}
+          label={(props) => {
+            type LabelProps = typeof props & { percentage: number };
+            const percentage = (props as LabelProps).percentage;
+            return `${percentage.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`;
+          }}
           outerRadius={120}
           fill="#8884d8"
           dataKey="value"
@@ -41,7 +45,7 @@ export function VotePieChart({ data }: VotePieChartProps) {
           ))}
         </Pie>
         <Tooltip
-          formatter={(value: number) => `${value.toLocaleString()} votos`}
+          formatter={(value: number) => `${value.toLocaleString('es-AR')} votos`}
           contentStyle={{
             backgroundColor: "rgba(255, 255, 255, 0.95)",
             border: "1px solid #e2e8f0",
