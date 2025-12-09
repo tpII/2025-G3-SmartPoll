@@ -18,8 +18,8 @@ export class VotingClient {
   // Método para emitir un voto
   async castVote(tav: string, electionId: string, candidate: string): Promise<string> {
     const gateway = await this.getGateway();
-    const network = gateway.getNetwork('mychannel');
-    const contract = network.getContract('basic');
+    const network = gateway.getNetwork('election');
+    const contract = network.getContract('votationChaincode');
 
     try {
       const result = await contract.submitTransaction('CreateVote', electionId, tav, candidate);
@@ -33,8 +33,8 @@ export class VotingClient {
   // Método para obtener todos los votos
   async getVotes(): Promise<string> {
     const gateway = await this.getGateway();
-    const network = gateway.getNetwork('mychannel');
-    const contract = network.getContract('basic');
+    const network = gateway.getNetwork('election');
+    const contract = network.getContract('votationChaincode');
 
     try {
       const result = await contract.evaluateTransaction('CountVotes');
