@@ -7,6 +7,7 @@ import { VotePieChart } from "@/components/vote-pie-chart";
 import { Navbar } from "@/components/navbar";
 import { QRScanSummary } from "@/components/qr-scan-summary";
 import type { QRScanAttempt } from "@/components/qr-scan-summary";
+import { USE_MOCK_DATA, mockVoteResults, mockQRScanResponse } from "@/mockData";
 
 interface Candidate {
   id: string;
@@ -36,28 +37,31 @@ export default function App() {
 
   useEffect(() => {
     async function fetchData() {
+      const candidatesRes = await fetch("/candidates.json");
+      const candidatesData = await candidatesRes.json();
+      setCandidates(candidatesData);
       try {
-        // Fetch candidates data
-        const candidatesRes = await fetch("/candidates.json");
-        const candidatesData = await candidatesRes.json();
-        setCandidates(candidatesData);
+        if (USE_MOCK_DATA) {
+          setVoteResults(mockVoteResults);
+          setQrScanAttempts(mockQRScanResponse.content);
+        } else {
+          // Fetch vote results
+          const votesRes = await fetch("/api/get-votes");
+          const votesData = await votesRes.json();
+          setVoteResults(votesData);
 
-        // Fetch vote results
-        const votesRes = await fetch("/api/get-votes");
-        const votesData = await votesRes.json();
-        setVoteResults(votesData);
+          // Fetch QR scan attempts
+          const qrRes = await fetch("/qr-api/qr-scan-attempt");
+          const qrData: QRScanResponse = await qrRes.json();
+          setQrScanAttempts(qrData.content);
 
-        // Fetch QR scan attempts
-        const qrRes = await fetch("/qr-api/qr-scan-attempt");
-        const qrData: QRScanResponse = await qrRes.json();
-        setQrScanAttempts(qrData.content);
-
-        // Process QR scan data for console
-        const scanSummary: Record<string, number> = {};
-        qrData.content.forEach((scan) => {
-          scanSummary[scan.qrScanStatus] =
-            (scanSummary[scan.qrScanStatus] || 0) + 1;
-        });
+          // Process QR scan data for console
+          const scanSummary: Record<string, number> = {};
+          qrData.content.forEach((scan) => {
+            scanSummary[scan.qrScanStatus] =
+              (scanSummary[scan.qrScanStatus] || 0) + 1;
+          });
+        }
       } catch (error) {
         console.error("[v0] Error fetching data:", error);
       } finally {
@@ -65,13 +69,8 @@ export default function App() {
       }
     }
 
-    // Fetch immediately
     fetchData();
-
-    // Fetch every 2 seconds
     const interval = setInterval(fetchData, 2000);
-
-    // Cleanup
     return () => clearInterval(interval);
   }, []);
 
@@ -127,7 +126,7 @@ export default function App() {
               Total de Votantes
             </p>
             <p className="text-6xl md:text-7xl font-bold text-white">
-              {(totalVotes - nullVotes).toLocaleString()}
+              {(totalVotes - nullVotes).toLocaleString('es-AR')}
             </p>
           </div>
         </Card>
@@ -169,12 +168,13 @@ export default function App() {
                   </div>
                   <div className="text-right">
                     <p className="text-4xl font-bold text-slate-900 dark:text-slate-50">
-                      {nullVotes.toLocaleString()}
+                      {nullVotes.toLocaleString('es-AR')}
                     </p>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                      {((nullVotes / (totalVotes + nullVotes)) * 100).toFixed(
-                        2
-                      )}
+                      {((nullVotes / (totalVotes + nullVotes)) * 100).toLocaleString('es-AR', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                      })}
                       %
                     </p>
                   </div>
