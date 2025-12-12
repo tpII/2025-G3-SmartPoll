@@ -51,7 +51,9 @@ export default function App() {
           setVoteResults(votesData);
 
           // Fetch QR scan attempts
-          const qrRes = await fetch("/qr-api/qr-scan-attempt");
+          const qrRes = await fetch(
+            "https://api.smartpoll.tech/api/qr-scan-attempt?page=0&size=100000"
+          );
           const qrData: QRScanResponse = await qrRes.json();
           setQrScanAttempts(qrData.content);
 
@@ -126,7 +128,7 @@ export default function App() {
               Total de Votantes
             </p>
             <p className="text-6xl md:text-7xl font-bold text-white">
-              {(totalVotes - nullVotes).toLocaleString('es-AR')}
+              {(totalVotes - nullVotes).toLocaleString("es-AR")}
             </p>
           </div>
         </Card>
@@ -168,12 +170,15 @@ export default function App() {
                   </div>
                   <div className="text-right">
                     <p className="text-4xl font-bold text-slate-900 dark:text-slate-50">
-                      {nullVotes.toLocaleString('es-AR')}
+                      {nullVotes.toLocaleString("es-AR")}
                     </p>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                      {((nullVotes / (totalVotes + nullVotes)) * 100).toLocaleString('es-AR', {
+                      {(
+                        (nullVotes / (totalVotes + nullVotes)) *
+                        100
+                      ).toLocaleString("es-AR", {
                         minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
+                        maximumFractionDigits: 2,
                       })}
                       %
                     </p>
