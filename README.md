@@ -217,7 +217,7 @@ En este video se muestra el funcionamiento completo del sistema SmartPoll, inclu
 
 ---
 
-<h1 id="startup">🚀 Puesta en marcha del sistema</h1>
+<h1 id="startup">Puesta en marcha del sistema</h1>
 
 <p>
 SmartPoll utiliza <b>Docker Compose</b> y un <b>Makefile</b> para simplificar la ejecución
