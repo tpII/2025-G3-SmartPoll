@@ -1,11 +1,10 @@
 <div align="center">
   <img 
-    src=""
+    src="https://github.com/user-attachments/assets/d28b0f95-aac5-4601-a732-8da9fda06d39"
     alt="SmartPoll Logo"
     width="100%"
   >
 </div>
-
 
 # Proyecto G3: SmartPoll – Sistema de votación segura y transparente con Blockchain
 
@@ -21,17 +20,17 @@ El sistema implementa un flujo de votación con **pase de acceso**, donde cada v
     <li><b>Acceso controlado mediante QR firmado</b></li>
     <p>Cada votante recibe un QR-Pase único, aleatorio y firmado digitalmente que valida su derecho a ingresar al sistema de votación.</p>
 
-    <li><b>Separación identidad–voto</b></li>
-    <p>El sistema desacopla completamente la identidad del votante de su elección mediante el uso de Tokens Anónimos de Voto (TAV).</p>
+  <li><b>Separación identidad–voto</b></li>
+  <p>El sistema desacopla completamente la identidad del votante de su elección mediante el uso de Tokens Anónimos de Voto (TAV).</p>
 
-    <li><b>Prevención de doble voto</b></li>
-    <p>Los QRs y TAVs son marcados como utilizados una única vez, impidiendo reutilizaciones y garantizando la unicidad del voto.</p>
+  <li><b>Prevención de doble voto</b></li>
+  <p>Los QRs y TAVs son marcados como utilizados una única vez, impidiendo reutilizaciones y garantizando la unicidad del voto.</p>
 
-    <li><b>Registro inmutable en blockchain</b></li>
-    <p>Cada voto se registra como una transacción en una blockchain permisionada, permitiendo auditoría y verificación posterior.</p>
+  <li><b>Registro inmutable en blockchain</b></li>
+  <p>Cada voto se registra como una transacción en una blockchain permisionada, permitiendo auditoría y verificación posterior.</p>
 
-    <li><b>Auditoría y trazabilidad</b></li>
-    <p>Se pueden auditar los hashes de los TAVs consumidos y verificar que coincidan con la cantidad de votos emitidos.</p>
+  <li><b>Auditoría y trazabilidad</b></li>
+  <p>Se pueden auditar los hashes de los TAVs consumidos y verificar que coincidan con la cantidad de votos emitidos.</p>
   </ol>
 </details>
 
@@ -41,14 +40,14 @@ El sistema implementa un flujo de votación con **pase de acceso**, donde cada v
     <li>Transparencia electoral</li>
     <p>Permite verificar el proceso completo de votación sin comprometer la privacidad del votante.</p>
 
-    <li>Confianza en el sistema</li>
-    <p>La inmutabilidad de blockchain y la firma digital de los tokens fortalecen la confianza en los resultados.</p>
+  <li>Confianza en el sistema</li>
+  <p>La inmutabilidad de blockchain y la firma digital de los tokens fortalecen la confianza en los resultados.</p>
 
-    <li>Privacidad garantizada</li>
-    <p>No existe vinculación directa entre el votante y su elección.</p>
+  <li>Privacidad garantizada</li>
+  <p>No existe vinculación directa entre el votante y su elección.</p>
 
-    <li>Escalabilidad educativa</li>
-    <p>El sistema puede adaptarse a distintos escenarios de votación académicos o experimentales.</p>
+  <li>Escalabilidad educativa</li>
+  <p>El sistema puede adaptarse a distintos escenarios de votación académicos o experimentales.</p>
   </ol>
 </details>
 
@@ -56,7 +55,7 @@ El sistema implementa un flujo de votación con **pase de acceso**, donde cada v
   <summary><i>Tecnologías utilizadas</i></summary>
   <ol>
 
-    <li>Hardware</li>
+  <li>Hardware</li>
     <ul>
       <li>Raspberry Pi 3 Model B: utilizadas en la mesa de ingreso y en el cuarto oscuro</li>
       <li>Cámara USB Logitech C170: lectura del QR-Pase</li>
@@ -64,7 +63,7 @@ El sistema implementa un flujo de votación con **pase de acceso**, donde cada v
       <li>Pantalla táctil HDMI + USB: interfaz de votación</li>
     </ul>
 
-    <li>Frontend</li>
+  <li>Frontend</li>
     <ul>
       <li>React con TypeScript</li>
       <li>Vite + SWC para bundling y compilación</li>
@@ -74,7 +73,7 @@ El sistema implementa un flujo de votación con **pase de acceso**, donde cada v
       <li>pnpm como gestor de dependencias</li>
     </ul>
 
-    <li>Backend</li>
+   <li>Backend</li>
     <ul>
       <li>Spring Boot 3 sobre Java 21 LTS (gestión de usuarios y emisión de QR-Pase)</li>
       <li>Node.js + Express (servidor central de votación y gestión de TAVs)</li>
@@ -84,7 +83,7 @@ El sistema implementa un flujo de votación con **pase de acceso**, donde cada v
       <li>Server-Sent Events (SSE) para sincronización entre servicios</li>
     </ul>
 
-    <li>Blockchain</li>
+  <li>Blockchain</li>
     <ul>
       <li>Hyperledger Fabric (blockchain permisionada)</li>
       <li>Smart Contracts desarrollados en TypeScript</li>
@@ -93,7 +92,7 @@ El sistema implementa un flujo de votación con **pase de acceso**, donde cada v
       <li>Hyperledger Explorer para visualización y auditoría</li>
     </ul>
 
-    <li>Infraestructura y despliegue</li>
+  <li>Infraestructura y despliegue</li>
     <ul>
       <li>Docker y Docker Compose</li>
       <li>Amazon Web Services (AWS)</li>
@@ -164,6 +163,57 @@ SmartPoll/
 ├── LICENSE                      # Licencia del proyecto
 └── README.md                    # Documentación principal
 </pre>
+
+---
+
+## Flujo de funcionamiento del sistema
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=WeLFkxHDGlk">
+    <img src="https://img.youtube.com/vi/WeLFkxHDGlk/maxresdefault.jpg" width="100%">
+  </a>
+</p>
+
+En este video se muestra el funcionamiento completo del sistema SmartPoll, incluyendo la emisión de votos, validación y registro en blockchain.
+
+<details>
+  <summary><i>Flujo completo del proceso de votación</i></summary>
+  <ol>
+    <li><b>Registro del votante en la plataforma web</b></li>
+    <p>Antes de iniciar el proceso, el votante debe registrarse en la plataforma web ingresando su correo electrónico, DNI y una contraseña, quedando identificado de manera única dentro del sistema.</p>
+
+  <li><b>Generación del QR-Pase firmado</b></li>
+    <p>Una vez validado el registro, el sistema genera un token aleatorio y lo asocia a un QR-Pase único y firmado digitalmente, vinculado al DNI del votante. El QR se muestra en la plataforma para su posterior presentación en la mesa de ingreso.</p>
+
+  <li><b>Almacenamiento del token asociado al QR-Pase</b></li>
+    <p>El token generado se almacena en la base de datos en la nube, quedando disponible para ser validado en el momento del sufragio.</p>
+
+  <li><b>Presentación del QR-Pase por parte del votante</b></li>
+    <p>El votante presenta el QR-Pase desde su dispositivo personal en la mesa de entrada para iniciar el proceso de verificación.</p>
+
+  <li><b>Escaneo del QR-Pase</b></li>
+    <p>Una Raspberry Pi equipada con una cámara USB escanea el QR-Pase presentado por el votante y envía la información al servidor para su validación.</p>
+
+  <li><b>Validación y marcado del QR-Pase</b></li>
+    <p>La Raspberry Pi consulta al servidor en la nube para verificar si el QR-Pase es válido y no ha sido utilizado previamente. Si es válido, el sistema lo marca como consumido; si no, se deniega el acceso al cuarto oscuro.</p>
+
+  <li><b>Notificación del estado mediante SSE</b></li>
+    <p>A través de una conexión Server-Sent Events (SSE), el servidor notifica al cliente que el QR-Pase fue consumido exitosamente. El dispositivo del votante indica que está habilitado para ingresar al cuarto oscuro y la conexión se cierra.</p>
+
+  <li><b>Habilitación de la interfaz de votación</b></li>
+    <p>Cuando la Raspberry Pi de la mesa de entrada autoriza el ingreso, la Raspberry Pi ubicada en el cuarto oscuro genera y firma un Token Anónimo de Votación (TAV), habilitando la interfaz de votación para el votante.</p>
+
+  <li><b>Emisión y envío del voto</b></li>
+    <p>El votante emite su voto, el cual se envía junto con el TAV firmado al servidor para su validación y posterior registro.</p>
+
+  <li><b>Registro del TAV en la blockchain permisionada</b></li>
+    <p>El Token Anónimo de Votación se registra como una transacción en la blockchain permisionada, garantizando inmutabilidad, trazabilidad y un conteo verificable de los votos.</p>
+
+  <li><b>Habilitación de un nuevo escaneo</b></li>
+    <p>Una vez finalizado el proceso de votación, la Raspberry Pi del cuarto oscuro se comunica con la Raspberry Pi de la mesa de entrada para habilitar un nuevo escaneo de QR-Pase.</p>
+  </ol>
+</details>
+
 
 ---
 
