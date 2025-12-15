@@ -123,6 +123,8 @@ El sistema implementa un flujo de votación con **pase de acceso**, donde cada v
 
 <h1 id="materials">Materiales</h1>
 
+<div align="center">
+
 | Componente                       | Cantidad | Uso                             |
 | -------------------------------- | -------- | ------------------------------- |
 | Raspberry Pi 3 Model B           | 2        | Mesa de ingreso y cuarto oscuro |
@@ -130,7 +132,10 @@ El sistema implementa un flujo de votación con **pase de acceso**, donde cada v
 | Cámara USB                       | 1        | Lectura de QR                   |
 | Pantalla táctil                  | 1        | Interfaz de votación            |
 
+</div>
+
 ---
+
 
 <h1 id="structure">Estructura del proyecto</h1>
 
@@ -178,6 +183,7 @@ En este video se muestra el funcionamiento completo del sistema SmartPoll, inclu
 
 <details>
   <summary><i>Flujo completo del proceso de votación</i></summary>
+  <img width="1999" height="1359" alt="image10" src="https://github.com/user-attachments/assets/a02d50ed-7a5f-43d7-8003-ceb3f6cb6188" />
   <ol>
     <li><b>Registro del votante en la plataforma web</b></li>
     <p>Antes de iniciar el proceso, el votante debe registrarse en la plataforma web ingresando su correo electrónico, DNI y una contraseña, quedando identificado de manera única dentro del sistema.</p>
@@ -217,6 +223,89 @@ En este video se muestra el funcionamiento completo del sistema SmartPoll, inclu
 
 ---
 
+<h1 id="bitacora">Bitácora del proyecto</h1>
+
+<p>
+La bitácora documenta el proceso de diseño, implementación, pruebas e iteraciones del sistema SmartPoll,
+incluyendo decisiones técnicas, problemas encontrados y soluciones adoptadas a lo largo del desarrollo.
+</p>
+
+<ul>
+  <li>
+    📓 <b>Bitácora completa del proyecto</b>:
+    <a href="https://github.com/tpII/2025-G3-SmartPoll/wiki/Bit%C3%A1cora" target="_blank">
+      Ver bitácora
+    </a>
+  </li>
+</ul>
+
+---
+
+<h1 id="screenshots">Capturas del sistema</h1>
+
+<!-- QR-Pase -->
+<h3>Interfaz de escaneo de QR-Pase</h3>
+
+<p align="center">
+  <img width="31%" alt="Login SmartPoll"
+       src="https://github.com/user-attachments/assets/2ad3255f-64d1-4d34-ac56-e083fbcef568" />
+  <img width="30.65%" alt="QR-Pase generado"
+       src="https://github.com/user-attachments/assets/ba5d9436-a238-4c9d-ad9c-cfb7cf5c500b" />
+  <img width="30.35%" alt="QR-Pase validado"
+       src="https://github.com/user-attachments/assets/7db8534f-6ea3-44a3-869e-14e99becabac" />
+</p>
+
+<p align="center">
+  <i>Login del votante, visualización del QR-Pase y validación exitosa</i>
+</p>
+
+---
+
+<!-- Votación -->
+<h3>Interfaz de votación</h3>
+
+<p align="center">
+  <img width="50%" alt="Votación en espera"
+       src="https://github.com/user-attachments/assets/1722c7e3-5857-4b4a-8ccf-8702a011044a" />
+  <img width="47.3%" alt="Selección de candidato"
+       src="https://github.com/user-attachments/assets/11030087-c914-42cf-b9a1-817e95100353" />
+</p>
+
+<p align="center">
+  <i>Pantalla de espera y emisión del voto en el cuarto oscuro</i>
+</p>
+
+---
+
+<!-- Auditoría -->
+<h3>Interfaz de auditoría</h3>
+
+<p align="center">
+  <img width="80%" alt="Auditoría de votos"
+       src="https://github.com/user-attachments/assets/63d01264-94a6-44da-9f17-138e924e4e97" />
+</p>
+
+<p align="center">
+  <i>Visualización de resultados y auditoría del proceso electoral</i>
+</p>
+
+---
+
+<!-- Blockchain -->
+<h3>Visualización de la blockchain</h3>
+
+<p align="center">
+  <img width="80%" alt="Hyperledger Explorer"
+       src="https://github.com/user-attachments/assets/629fc943-a1cd-45ad-8543-26c25de34c05" />
+</p>
+
+<p align="center">
+  <i>Hyperledger Explorer – bloques y transacciones registradas</i>
+</p>
+
+
+---
+
 <h1 id="startup">Puesta en marcha del sistema</h1>
 
 <p>
@@ -242,19 +331,54 @@ make down
 
 <h1 id="authors">Autores</h1>
 
-* **Blasco, Gonzalo**  
-  [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/gonblas) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/gonblas/)
+<ul>
+  <li>
+    <a href="https://www.linkedin.com/in/gonblas/">
+      <img align="right" src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" />
+    </a>
+    <a href="https://github.com/gonblas">
+      <img align="right" src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" style="margin-right: 5px;" />
+    </a>
+    <strong>Blasco, Gonzalo</strong>
+    <br clear="right"/>
+  </li>
 
-* **Cabral, Ramiro Nicolás**  
-  [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ramirocabral) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/ramirocabral04/)
+  <li>
+    <a href="https://www.linkedin.com/in/ramirocabral04/">
+      <img align="right" src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" />
+    </a>
+    <a href="https://github.com/ramirocabral">
+      <img align="right" src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" style="margin-right: 5px;" />
+    </a>
+    <strong>Cabral, Ramiro Nicolás</strong>
+    <br clear="right"/>
+  </li>
 
-* **Polanis, Iván Valentín**  
-  [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ivanpolanis) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/ivanpolanis/)
-
----
+  <li>
+    <a href="https://www.linkedin.com/in/ivanpolanis/">
+      <img align="right" src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" />
+    </a>
+    <a href="https://github.com/ivanpolanis">
+      <img align="right" src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" style="margin-right: 5px;" />
+    </a>
+    <strong>Polanis, Iván Valentín</strong>
+    <br clear="right"/>
+  </li>
+</ul>
 
 <h1 id="coordinator">Coordinador</h1>
 
-* **Gastón Marón**  
-  _Profesor – Taller de Proyecto II_  
-  [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/gmaron) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/gastonmaron/)
+<ul>
+  <li>
+    <a href="https://www.linkedin.com/in/gastonmaron/">
+      <img align="right" src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" />
+    </a>
+    <a href="https://github.com/gmaron">
+      <img align="right" src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" style="margin-right: 5px;" />
+    </a>
+    <strong>Gastón Marón</strong><br />
+    <em>Profesor – Taller de Proyecto II</em>
+    <br clear="right"/>
+  </li>
+</ul>
+
