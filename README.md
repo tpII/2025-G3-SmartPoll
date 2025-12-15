@@ -221,7 +221,7 @@ En este video se muestra el funcionamiento completo del sistema SmartPoll, inclu
 
 <p>
 SmartPoll utiliza <b>Docker Compose</b> y un <b>Makefile</b> para simplificar la ejecución
-del entorno completo de desarrollo, incluyendo los servicios backend y blockchain.
+del entorno completo de desarrollo, incluyendo los servicios Webserver + Frontend + Blockchain + Explorer.
 </p>
 
 <p>Para construir las imágenes y levantar tales servicios del sistema:</p>
