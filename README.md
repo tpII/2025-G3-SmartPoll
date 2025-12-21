@@ -160,6 +160,7 @@ SmartPoll/
 ├── infra/                       # Infraestructura como Código (IaC)
 ├── qr-access-app/               # Frontend de acceso del votante
 ├── qr-scan/                     # Servicio de escaneo de QR (Raspberry Pi)
+├── reports/                     # Informes del proyecto
 ├── votation-kiosk/              # Interfaz de votación (cuarto oscuro)
 ├── votation-server/             # Servidor central de votación
 ├── docker-compose.yml           # Orquestación local del sistema
