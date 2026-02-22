@@ -8,6 +8,53 @@
 
 # Proyecto G3: SmartPoll – Sistema de votación segura y transparente con Blockchain
 
+## Flujo de funcionamiento del sistema
+
+![Flujo de funcionamiento del sistema](smartpoll-2.gif)
+
+
+<details>
+  <summary><i>Flujo completo del proceso de votación</i></summary>
+  <img width="1999" height="1359" alt="image10" src="https://github.com/user-attachments/assets/a02d50ed-7a5f-43d7-8003-ceb3f6cb6188" />
+  <ol>
+    <li><b>Registro del votante en la plataforma web</b></li>
+    <p>Antes de iniciar el proceso, el votante debe registrarse en la plataforma web ingresando su correo electrónico, DNI y una contraseña, quedando identificado de manera única dentro del sistema.</p>
+
+  <li><b>Generación del QR-Pase firmado</b></li>
+    <p>Una vez validado el registro, el sistema genera un token aleatorio y lo asocia a un QR-Pase único y firmado digitalmente, vinculado al DNI del votante. El QR se muestra en la plataforma para su posterior presentación en la mesa de ingreso.</p>
+
+  <li><b>Almacenamiento del token asociado al QR-Pase</b></li>
+    <p>El token generado se almacena en la base de datos en la nube, quedando disponible para ser validado en el momento del sufragio.</p>
+
+  <li><b>Presentación del QR-Pase por parte del votante</b></li>
+    <p>El votante presenta el QR-Pase desde su dispositivo personal en la mesa de entrada para iniciar el proceso de verificación.</p>
+
+  <li><b>Escaneo del QR-Pase</b></li>
+    <p>Una Raspberry Pi equipada con una cámara USB escanea el QR-Pase presentado por el votante y envía la información al servidor para su validación.</p>
+
+  <li><b>Validación y marcado del QR-Pase</b></li>
+    <p>La Raspberry Pi consulta al servidor en la nube para verificar si el QR-Pase es válido y no ha sido utilizado previamente. Si es válido, el sistema lo marca como consumido; si no, se deniega el acceso al cuarto oscuro.</p>
+
+  <li><b>Notificación del estado mediante SSE</b></li>
+    <p>A través de una conexión Server-Sent Events (SSE), el servidor notifica al cliente que el QR-Pase fue consumido exitosamente. El dispositivo del votante indica que está habilitado para ingresar al cuarto oscuro y la conexión se cierra.</p>
+
+  <li><b>Habilitación de la interfaz de votación</b></li>
+    <p>Cuando la Raspberry Pi de la mesa de entrada autoriza el ingreso, la Raspberry Pi ubicada en el cuarto oscuro genera y firma un Token Anónimo de Votación (TAV), habilitando la interfaz de votación para el votante.</p>
+
+  <li><b>Emisión y envío del voto</b></li>
+    <p>El votante emite su voto, el cual se envía junto con el TAV firmado al servidor para su validación y posterior registro.</p>
+
+  <li><b>Registro del TAV en la blockchain permisionada</b></li>
+    <p>El Token Anónimo de Votación se registra como una transacción en la blockchain permisionada, garantizando inmutabilidad, trazabilidad y un conteo verificable de los votos.</p>
+
+  <li><b>Habilitación de un nuevo escaneo</b></li>
+    <p>Una vez finalizado el proceso de votación, la Raspberry Pi del cuarto oscuro se comunica con la Raspberry Pi de la mesa de entrada para habilitar un nuevo escaneo de QR-Pase.</p>
+  </ol>
+</details>
+
+
+---
+
 ## Descripción del proyecto
 
 SmartPoll es un sistema de votación electrónica diseñado con fines educativos que integra **blockchain permisionada**, **códigos QR firmados digitalmente** y **Tokens Anónimos de Voto (TAV)** para garantizar seguridad, transparencia y trazabilidad, preservando al mismo tiempo la privacidad del votante.
@@ -169,58 +216,6 @@ SmartPoll/
 ├── LICENSE                      # Licencia del proyecto
 └── README.md                    # Documentación principal
 </pre>
-
----
-
-## Flujo de funcionamiento del sistema
-
-<p align="center">
-  <a href="https://www.youtube.com/watch?v=WeLFkxHDGlk">
-    <img src="https://img.youtube.com/vi/WeLFkxHDGlk/maxresdefault.jpg" width="100%">
-  </a>
-</p>
-
-En este video se muestra el funcionamiento completo del sistema SmartPoll, incluyendo la emisión de votos, validación y registro en blockchain.
-
-<details>
-  <summary><i>Flujo completo del proceso de votación</i></summary>
-  <img width="1999" height="1359" alt="image10" src="https://github.com/user-attachments/assets/a02d50ed-7a5f-43d7-8003-ceb3f6cb6188" />
-  <ol>
-    <li><b>Registro del votante en la plataforma web</b></li>
-    <p>Antes de iniciar el proceso, el votante debe registrarse en la plataforma web ingresando su correo electrónico, DNI y una contraseña, quedando identificado de manera única dentro del sistema.</p>
-
-  <li><b>Generación del QR-Pase firmado</b></li>
-    <p>Una vez validado el registro, el sistema genera un token aleatorio y lo asocia a un QR-Pase único y firmado digitalmente, vinculado al DNI del votante. El QR se muestra en la plataforma para su posterior presentación en la mesa de ingreso.</p>
-
-  <li><b>Almacenamiento del token asociado al QR-Pase</b></li>
-    <p>El token generado se almacena en la base de datos en la nube, quedando disponible para ser validado en el momento del sufragio.</p>
-
-  <li><b>Presentación del QR-Pase por parte del votante</b></li>
-    <p>El votante presenta el QR-Pase desde su dispositivo personal en la mesa de entrada para iniciar el proceso de verificación.</p>
-
-  <li><b>Escaneo del QR-Pase</b></li>
-    <p>Una Raspberry Pi equipada con una cámara USB escanea el QR-Pase presentado por el votante y envía la información al servidor para su validación.</p>
-
-  <li><b>Validación y marcado del QR-Pase</b></li>
-    <p>La Raspberry Pi consulta al servidor en la nube para verificar si el QR-Pase es válido y no ha sido utilizado previamente. Si es válido, el sistema lo marca como consumido; si no, se deniega el acceso al cuarto oscuro.</p>
-
-  <li><b>Notificación del estado mediante SSE</b></li>
-    <p>A través de una conexión Server-Sent Events (SSE), el servidor notifica al cliente que el QR-Pase fue consumido exitosamente. El dispositivo del votante indica que está habilitado para ingresar al cuarto oscuro y la conexión se cierra.</p>
-
-  <li><b>Habilitación de la interfaz de votación</b></li>
-    <p>Cuando la Raspberry Pi de la mesa de entrada autoriza el ingreso, la Raspberry Pi ubicada en el cuarto oscuro genera y firma un Token Anónimo de Votación (TAV), habilitando la interfaz de votación para el votante.</p>
-
-  <li><b>Emisión y envío del voto</b></li>
-    <p>El votante emite su voto, el cual se envía junto con el TAV firmado al servidor para su validación y posterior registro.</p>
-
-  <li><b>Registro del TAV en la blockchain permisionada</b></li>
-    <p>El Token Anónimo de Votación se registra como una transacción en la blockchain permisionada, garantizando inmutabilidad, trazabilidad y un conteo verificable de los votos.</p>
-
-  <li><b>Habilitación de un nuevo escaneo</b></li>
-    <p>Una vez finalizado el proceso de votación, la Raspberry Pi del cuarto oscuro se comunica con la Raspberry Pi de la mesa de entrada para habilitar un nuevo escaneo de QR-Pase.</p>
-  </ol>
-</details>
-
 
 ---
 
